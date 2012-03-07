@@ -19,12 +19,26 @@
 The Debug Configuration bit is handline by MPLAB and should not be embedded
 in the configuration macro.*/
 
-/* TODO Fill in your configuration bits here.  The general style is below:    */
 
-#if 0
+#if 1
 
-/* Example Syntax: */
-#pragma config FPLLIDIV=DIV_2, FPLLMUL=MUL_20, FPLLODIV=DIV_1, FNOSC=FRC
-#pragma config POSCMOD=OFF, FPBDIV=DIV_1, FCKSM=CSECME, FWDTEN=OFF 
+// Config settings
+// POSCMOD = HS, FNOSC = PRIPLL, FWDTEN = OFF
+// PLLIDIV = DIV_2, PLLMUL = MUL_16
+// PBDIV = 8 (default)
+// Main clock = 8MHz /2 * 16    = 80MHz
+// Peripheral clock = 80MHz /8  =  10MHz
+
+// Configuration Bit settings
+// SYSCLK = 80 MHz (8MHz Crystal/ FPLLIDIV * FPLLMUL / FPLLODIV)
+// PBCLK = 10 MHz
+// Primary Osc w/PLL (XT+,HS+,EC+PLL)
+// WDT OFF
+// FCSM (fail-safe clock moniter) disabled
+// clock switching disabled
+// Other options are don't care
+
+#pragma config FPLLMUL = MUL_20, FPLLIDIV = DIV_2, FPLLODIV = DIV_1, FWDTEN = OFF
+#pragma config POSCMOD = HS, FNOSC = PRIPLL, FPBDIV = DIV_8
 
 #endif

@@ -1,3 +1,5 @@
+#ifndef _USER_H_
+#define _USER_H_
 /******************************************************************************/
 /* User Level #define Macros                                                  */
 /******************************************************************************/
@@ -13,3 +15,4 @@
 void InitApp(void);         /* I/O and Peripheral Initialization */
 
 
+#endif // #ifndef _USER_H_
