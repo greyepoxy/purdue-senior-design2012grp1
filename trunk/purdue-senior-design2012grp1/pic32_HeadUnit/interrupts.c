@@ -6,6 +6,7 @@
 #include <sys/attribs.h>     /* For __ISR definition                          */
 #include <stdint.h>          /* For uint32_t definition                       */
 #include <stdbool.h>         /* For true/false definition                     */
+#include "interrupts.h"      /* For flags*/
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -72,4 +73,109 @@
 /******************************************************************************/
 
 /* TODO Add interrupt routine code here. */
+// configure the CN interrupt handler
+void __ISR(_CHANGE_NOTICE_VECTOR, IPL2SOFT) ChangeNotice_Handler(void)
+{
+    unsigned int temp;
+
+    // clear the mismatch condition
+    temp = mPORTDRead();
+
+    // clear the interrupt flag
+    mCNClearIntFlag();
+
+    //if (temp == 0xFFFE)
+    //{
+        // .. things to do .. toggle the button flag
+    buttonFlag = 1;
+    mPORTAToggleBits(BIT_0);
+    //}
+}
+
+// UART 2 interrupt handler
+// it is set at priority level 2 with software context saving
+void __ISR(_UART2_VECTOR, IPL2SOFT) IntUart2Handler(void)
+{
+    // Is this an RX interrupt?
+    if (INTGetFlag(INT_SOURCE_UART_RX(UART2)))
+    {
+        char temp = UARTGetDataByte(UART2);
+        // Echo what we just received.
+        PutCharacter(temp);
+
+        // Clear the RX interrupt Flag
+        INTClearFlag(INT_SOURCE_UART_RX(UART2));
+
+        // Toggle LED to indicate UART activity
+        mPORTAToggleBits(BIT_7);
+    }
+
+    // Transmit complete send next byte in buffer
+    if ( INTGetFlag(INT_SOURCE_UART_TX(UART2)) )
+    {
+        //Clear the TX interrupt Flag
+        INTClearFlag(INT_SOURCE_UART_TX(UART2));
+
+        //if buffer empty exit
+        if (TBufferHead == TBufferTail)
+            return;
+        //else transmit next character
+        else
+        {
+            PutCharacter(rs232TBuffer[TBufferHead]);
+            TBufferHead = (TBufferHead + 1)% TBufferSize;
+        }
+
+    }
+}
+
+void __ISR(_TIMER_1_VECTOR, IPL2SOFT) Timer1Handler(void)
+{
+    // clear the interrupt flag
+    mT1ClearIntFlag();
+    // Set the timer1 flag
+    timer1Flag = 1;
+}
+
+void __ISR(_EXTERNAL_1_VECTOR, IPL2SOFT) ExtINT1Handler(void)
+{
+    // clear the interrupt flag
+    INTClearFlag(INT_VECTOR_EX_INT(INT_INT1));
+	// disables the interrupt for now
+	DisableINT1;
+
+    // set the read sensor flag
+    readAccelFlag = 1;
+}
+
+void __ISR(_EXTERNAL_2_VECTOR, IPL2SOFT) ExtINT2Handler(void)
+{
+    // clear the interrupt flag
+    INTClearFlag(INT_VECTOR_EX_INT(INT_INT2));
+	// disables the interrupt for now
+	DisableINT2;
+
+    // set the read sensor flag
+    readMagFlag = 1;
+}
+
+void __ISR(_EXTERNAL_3_VECTOR, IPL2SOFT) ExtINT3Handler(void)
+{
+    // clear the interrupt flag
+    INTClearFlag(INT_VECTOR_EX_INT(INT_INT3));
+	// disables the interrupt for now
+	DisableINT3;
+
+    // set the read sensor flag
+    readGyroFlag = 1;
+}
+
+void PutCharacter(const char character)
+{
+  while (!UARTTransmitterIsReady(UART2));
+
+  UARTSendDataByte(UART2, character);
+
+  //while (!UARTTransmissionHasCompleted(UART2));
+}
 
