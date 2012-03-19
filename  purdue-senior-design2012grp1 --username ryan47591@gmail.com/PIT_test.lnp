@@ -1,0 +1,4 @@
+--cpu ARM926EJ-S "pit.o" "aic.o" "tc.o" "twi.o" "dbgu.o" "math.o" "pio.o" "main.o" "tcm8230.o" "isi.o" "sam9xe.o" --strict --scatter "PIT_test.sct" 
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\PIT_test.map" -o "PIT_test.axf"
