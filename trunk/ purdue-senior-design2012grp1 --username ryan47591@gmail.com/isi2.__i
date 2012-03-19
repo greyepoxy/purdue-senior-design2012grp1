@@ -1,0 +1,1 @@
+-c --cpu ARM926EJ-S -g -O0 --apcs=interwork -I C:\Keil\ARM\RV31\Inc -I C:\Keil\ARM\CMSIS\Include -I C:\Keil\ARM\Inc\Atmel\SAM9XE -o "isi2.o" --omf_browse "isi2.crf" --depend "isi2.d" "header files\isi2.c"
