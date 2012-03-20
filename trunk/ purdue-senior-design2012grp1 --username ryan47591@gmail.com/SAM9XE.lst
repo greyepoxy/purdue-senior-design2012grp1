@@ -667,9 +667,9 @@ ARM Macro Assembler    Page 11
   322 00000000 00000301 
                        PMC_SCER_Val
                                EQU              0x00000301
-  323 00000000 00000804 
+  323 00000000 02000804 
                        PMC_PCER_Val
-                               EQU              0x00000804
+                               EQU              0x02000804
   324 00000000 00000B01 
                        CKGR_MOR_Val
                                EQU              0x00000B01
@@ -682,12 +682,12 @@ ARM Macro Assembler    Page 11
   327 00000000 00000001 
                        PMC_MCKR_Val
                                EQU              0x00000001
-  328 00000000 00000000 
+  328 00000000 00000001 
                        PMC_PCK0_Val
-                               EQU              0x00000000
-  329 00000000 00000000 
+                               EQU              0x00000001
+  329 00000000 00000001 
                        PMC_PCK1_Val
-                               EQU              0x00000000
+                               EQU              0x00000001
   330 00000000 00000000 
                        PMC_PCK2_Val
                                EQU              0x00000000
@@ -2892,11 +2892,11 @@ ARM Macro Assembler    Page 45
  1514 0000010C 0AFFFFFC        BEQ              MCKR_Loop2
  1515 00000110         
  1516 00000110         ; Setup Programmable Clock Register 0
- 1517 00000110 E3A01000        LDR              R1, =PMC_PCK0_Val
+ 1517 00000110 E3A01001        LDR              R1, =PMC_PCK0_Val
  1518 00000114 E5801040        STR              R1, [R0, #PMC_PCK0_OFS]
  1519 00000118         
  1520 00000118         ; Setup Programmable Clock Register 1
- 1521 00000118 E3A01000        LDR              R1, =PMC_PCK1_Val
+ 1521 00000118 E3A01001        LDR              R1, =PMC_PCK1_Val
  1522 0000011C E5801044        STR              R1, [R0, #PMC_PCK1_OFS]
  1523 00000120         
  1524 00000120         ; Setup Programmable Clock Register 2
@@ -3181,7 +3181,7 @@ _Bit
               FFFFFA00 
               FFFFFC00 
               00000301 
-              00000804 
+              02000804 
               00000B01 
 
 
@@ -4603,7 +4603,7 @@ Symbol: PMC_PCER_OFS
    Uses
       At line 1461 in file SAM9XE.s
 Comment: PMC_PCER_OFS used once
-PMC_PCER_Val 00000804
+PMC_PCER_Val 02000804
 
 Symbol: PMC_PCER_Val
    Definitions
@@ -4619,7 +4619,7 @@ Symbol: PMC_PCK0_OFS
    Uses
       At line 1518 in file SAM9XE.s
 Comment: PMC_PCK0_OFS used once
-PMC_PCK0_Val 00000000
+PMC_PCK0_Val 00000001
 
 Symbol: PMC_PCK0_Val
    Definitions
@@ -4635,7 +4635,7 @@ Symbol: PMC_PCK1_OFS
    Uses
       At line 1522 in file SAM9XE.s
 Comment: PMC_PCK1_OFS used once
-PMC_PCK1_Val 00000000
+PMC_PCK1_Val 00000001
 
 
 
