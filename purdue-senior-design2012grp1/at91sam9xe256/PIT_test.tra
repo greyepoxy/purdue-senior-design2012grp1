@@ -20,7 +20,7 @@
 ### ADS-LD Output File: 'PIT_test.axf'
 ### ADS-LD Command File: 'PIT_test.lnp'
 ### Checking for dirty Components...
-### Creating CmdFile 'PIT_test.lnp', Handle=0x000004FC
+### Creating CmdFile 'PIT_test.lnp', Handle=0x000003B8
 ### Writing '.lnp' file
 ### ADS-LD Command file 'PIT_test.lnp' is ready.
 ### ADS-LD: About to start ADS-LD Thread.
