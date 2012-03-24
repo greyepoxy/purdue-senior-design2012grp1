@@ -1,0 +1,58 @@
+Partlist exported from C:/Documents and Settings/team1/My Documents/eagle/HeadBoardv3/HeadBoardv2/USBHubAndSensors.sch at 3/7/2012 3:46:31 PM
+
+Assembly variant: 
+
+Qty Value              Device             Parts                                                                                                  
+1                      CON20              CON1                                                                                                   
+1                      DB9FEMALE          X1                                                                                                     
+2                      LED-FKIT-1206      LED1, LED2                                                                                             
+1                      M05PTH             JP6_MAG3110                                                                                            
+2                      M06SIP             JP5_MMA8452Q, JP14                                                                                     
+1                      M07                JP4_ITG-3200                                                                                           
+2                      SJ                 SJ1, SJ2                                                                                               
+2                      TAC_SWITCHPTH      S1, S4                                                                                                 
+13  0.1uf              CAP1206            C1, C2, C3, C4, C5, C7, C11, C12, C57, C58, C61, C62, C63                                              
+5   0.1uf              CAP_POL1206        C6, C14, C17, C18, C19                                                                                 
+1   1K                 RESISTOR1206       R17                                                                                                    
+1   1k                 RESISTOR1206       R32                                                                                                    
+1   1nf                CAP1206            C54                                                                                                    
+1   1uf                CAP1206            C10                                                                                                    
+4   2.2uH              INDUCTOR1210       L1, L2, L3, L4                                                                                         
+2   4.7k               RESISTOR1206       R20, R21                                                                                               
+4   4.7uF              CAP1206            C15, C47, C48, C49                                                                                     
+2   4.7uf              CAP_POL1206        C59, C60                                                                                               
+2   7pF                CAP1206            C55, C56                                                                                               
+1   8MHz               CRYSTALHC49UP      Q1                                                                                                     
+2   10                 RESISTOR1206       R3, R23                                                                                                
+9   10k                RESISTOR1206       R2, R26, R27, R28, R29, R30, R31, R33, R34                                                             
+1   10nf               CAP1206            C29                                                                                                    
+4   10pF               CAP1206            C20, C21, C22, C23                                                                                     
+1   10uF               CAP1206            C50                                                                                                    
+3   10uf               CAP1206            C16, C51, C52                                                                                          
+3   10uf               CAP_POL1206        C13, C31, C53                                                                                          
+1   18.432MHz          CRYSTALTC38H       300-8444-ND                                                                                            
+2   22pf               CAP1206            C8, C9                                                                                                 
+1   32.768kHz          CRYSTALTC38H       535-9034-ND                                                                                            
+1   40TR-12B           40TR-12B           U$5                                                                                                    
+2   45k                RESISTOR1206       R7, R12                                                                                                
+4   50k                RESISTOR1206       R5, R8, R10, R13                                                                                       
+1   65                 RESISTOR1206       R9                                                                                                     
+1   100                RESISTOR1206       R4                                                                                                     
+5   100K               RESISTOR1206       R14, R15, R16, R18, R25                                                                                
+3   100k               RESISTOR1206       R6, R11, R19                                                                                           
+21  100nF              CAP1206            C24, C25, C26, C27, C28, C30, C32, C33, C34, C35, C36, C37, C38, C39, C40, C41, C42, C43, C44, C45, C46
+1   370                RESISTOR1206       R1                                                                                                     
+2   470                RESISTOR1206       R22, R24                                                                                               
+1   AT91SAM9XE256      AT91SAM9XE256      U$7                                                                                                    
+1   G-107PLUG-IN       G-107PLUG-IN       U$15                                                                                                   
+4   LM36715            LM36715            U$5_LM3671MF-3.3, U$14_LM3671MF-2.8, U$16_LM3671MF-1.8, U$17_LM3671-1.5                                
+7   M01PTH             M01PTH             JP1, JP3, JP4, JP5, JP6, JP7, JP8                                                                      
+1   MAX275ACPBCWP      MAX275ACPBCWP      IC3                                                                                                    
+1   MAX3232CUE         MAX3232CUE         IC1                                                                                                    
+2   MIC94061YC6        MIC94061YC6        U$6, U$9                                                                                               
+1   PIC32MX534F06HTQFP PIC32MX534F06HTQFP U$1                                                                                                    
+1   POWER_JACKSMD      POWER_JACKSMD      J2                                                                                                     
+1   RJ11-6L-B          RJ11-6L-B          J1                                                                                                     
+1   TCM8230MD          TCM8230MD          CAM1                                                                                                   
+1   USB-MICROB         USB-MICROB         X2                                                                                                     
+1   XBEE-1B2           XBEE-1B2           U$2                                                                                                    
