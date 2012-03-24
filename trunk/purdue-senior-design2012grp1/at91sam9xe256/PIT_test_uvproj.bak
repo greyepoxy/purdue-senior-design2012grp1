@@ -441,6 +441,16 @@
               <FileType>5</FileType>
               <FilePath>.\header files\trace.h</FilePath>
             </File>
+            <File>
+              <FileName>TCM8230.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header files\TCM8230.h</FilePath>
+            </File>
+            <File>
+              <FileName>isi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header files\isi.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -462,11 +472,6 @@
               <FilePath>.\header files\tc.c</FilePath>
             </File>
             <File>
-              <FileName>I2C.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\I2C.c</FilePath>
-            </File>
-            <File>
               <FileName>twi.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\header files\twi.c</FilePath>
@@ -485,6 +490,21 @@
               <FileName>pio.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\header files\pio.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>TCM8230.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\header files\TCM8230.c</FilePath>
+            </File>
+            <File>
+              <FileName>isi2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\header files\isi2.c</FilePath>
             </File>
           </Files>
         </Group>

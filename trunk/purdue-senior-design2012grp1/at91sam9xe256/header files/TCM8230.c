@@ -40,7 +40,7 @@
 
 			//Writing 0x03 to register 0x03 to set the camera to RGB and Black&White.
 			//Also starts image capture.
-			TWI_StartWrite(pTwi, C_Addr, 0x03, 1, 0x03);
+			TWI_StartWrite(pTwi, C_Addr, 0x03, 1, 0x23);
 			while(!TWI_ByteSent(pTwi));
 			TWI_SendSTOPCondition(pTwi);
 

@@ -502,9 +502,9 @@
               <FilePath>.\header files\TCM8230.c</FilePath>
             </File>
             <File>
-              <FileName>isi2.c</FileName>
+              <FileName>isi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\header files\isi2.c</FilePath>
+              <FilePath>.\header files\isi.c</FilePath>
             </File>
           </Files>
         </Group>
