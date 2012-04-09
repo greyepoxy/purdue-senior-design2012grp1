@@ -120,22 +120,27 @@ int32_t main(void)
     InitApp();
 
     // Initialize debug messages (when supported)
-    DBINIT();
+    //DBINIT();
 
     /* TODO <INSERT USER APPLICATION CODE HERE> */
     //OpenTimer2(T2_ON | T2_PS_1_1, 0x00F9);
     /* Enable OC | 32 bit Mode  | Timer2 is selected | Continuous O/P   | OC Pin High , S Compare value, Compare value*/
     //OpenOC1( OC_ON | OC_TIMER_MODE16 | OC_TIMER2_SRC | OC_CONTINUE_PULSE | OC_LOW_HIGH , 0x0000, 0x007C );
 
-    PORTSetPinsDigitalOut(IOPORT_A, BIT_0);
-    PORTSetPinsDigitalIn(IOPORT_D, BIT_6);
-    mPORTAClearBits(BIT_0);
-    mCNOpen(CN_ON | CN_IDLE_CON, CN15_ENABLE, CN15_PULLUP_ENABLE);
-    temp = mPORTDRead();
-    ConfigIntCN(CHANGE_INT_ON | CHANGE_INT_PRI_2);
+    //PORTSetPinsDigitalOut(IOPORT_A, BIT_0);
+    //PORTSetPinsDigitalIn(IOPORT_D, BIT_6);
+	PORTSetPinsDigitalOut(IOPORT_D, BIT_7);
+	PORTSetPinsDigitalOut(IOPORT_D, BIT_5);
+	PORTSetPinsDigitalOut(IOPORT_D, BIT_6);
+	mPORTDClearBits(BIT_7 | BIT_6 | BIT_5);
 
-    mPORTAClearBits(BIT_7); 		// Turn off RA7 on startup.
-    mPORTASetPinsDigitalOut(BIT_7);	// Make RA7 as output.
+    //mPORTAClearBits(BIT_0);
+    //mCNOpen(CN_ON | CN_IDLE_CON, CN15_ENABLE, CN15_PULLUP_ENABLE);
+    //temp = mPORTDRead();
+    //ConfigIntCN(CHANGE_INT_ON | CHANGE_INT_PRI_2);
+
+    //mPORTAClearBits(BIT_7); 		// Turn off RA7 on startup.
+    //mPORTASetPinsDigitalOut(BIT_7);	// Make RA7 as output.
 
     // Explorer-16 uses UART2 to connect to the PC.
     // This initialization assumes 10MHz Fpb clock. If it changes,
@@ -147,32 +152,59 @@ int32_t main(void)
     UARTEnable(UART2, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
 
     // Configure UART2 RX Interrupt
-    INTEnable(INT_SOURCE_UART_RX(UART2), INT_ENABLED);
-    INTEnable(INT_SOURCE_UART_TX(UART2), INT_ENABLED);
     INTSetVectorPriority(INT_VECTOR_UART(UART2), INT_PRIORITY_LEVEL_2);
     INTSetVectorSubPriority(INT_VECTOR_UART(UART2), INT_SUB_PRIORITY_LEVEL_0);
+	INTEnable(INT_SOURCE_UART_RX(UART2), INT_ENABLED);
+    INTEnable(INT_SOURCE_UART_TX(UART2), INT_ENABLED);
 
     // Configure the T1 timer which says when to send the accel data to the computer
-    OpenTimer1(T1_ON | T1_PS_1_256, T1_TICK);
+    OpenTimer1(T1_ON | T1_PS_1_256, T1_TICK); //one second interrupts
     ConfigIntTimer1(T1_INT_ON | T1_INT_PRIOR_2);
 
+	//Enable Camera Peripheral and Linear regulators
+	mPORTDSetBits(BIT_6 | BIT_5);
+
+//	CloseADC10();
+//	//Set up analog to digital converter for port pin AN15
+//	// define setup parameters for OpenADC10
+//	// 				Turn module on | ouput in integer | trigger mode auto | enable autosample
+//	#define ATDPARAM1  ADC_MODULE_ON | ADC_FORMAT_INTG | ADC_CLK_AUTO | ADC_AUTO_SAMPLING_ON
+//	// 				ADC ref external    | disable offset test    | disable scan mode | perform 2 samples | use dual buffers | use alternate mode
+//	#define ATDPARAM2  ADC_VREF_AVDD_AVSS | ADC_OFFSET_CAL_DISABLE | ADC_SCAN_OFF | ADC_SAMPLES_PER_INT_1 | ADC_ALT_BUF_ON | ADC_ALT_INPUT_OFF
+//	//				  use ADC internal clock | set sample time
+//	#define ATDPARAM3  ADC_CONV_CLK_PB | ADC_SAMPLE_TIME_15
+//	//               set AN4 and AN5 as analog inputs
+//	#define ATDPARAM4	ENABLE_AN15_ANA
+//	// do not assign channels to scan
+//	#define ATDPARAM5	SKIP_SCAN_AN15
+//
+//	// use ground as neg ref for A | use AN4 for input A
+//	SetChanADC10( ADC_CH0_NEG_SAMPLEA_NVREF | ADC_CH0_POS_SAMPLEA_AN15); // configure to sample AN15
+//	OpenADC10( ATDPARAM1, ATDPARAM2, ATDPARAM3, ATDPARAM4, ATDPARAM5 ); // configure ADC using the parameters defined above;
+//	mAD1SetIntPriority(INT_PRIORITY_LEVEL_2);
+//	mAD1SetIntSubPriority(INT_SUB_PRIORITY_LEVEL_0);
+//	mAD1IntEnable(INT_ENABLED);
+//	EnableADC10(); // Enable the ADC
+	
+
+
     // Configure I2C
-    I2CConfigure(I2C_BUS, I2C_ENABLE_SLAVE_CLOCK_STRETCHING|I2C_ENABLE_HIGH_SPEED);
-    actualI2CClock = I2CSetFrequency(I2C1, GetPeripheralClock(), I2C_CLOCK_FREQ);
-    if ( abs(actualI2CClock-I2C_CLOCK_FREQ) > I2C_CLOCK_FREQ/10 )
-    {
-        DBPRINTF("I2C1 clock frequency (%ld) error exceeds 10%%\n", actualClock);
-    }
-    I2CEnable(I2C_BUS, TRUE);
-	I2CClearStatus(I2C_BUS, I2C_TRANSMITTER_FULL);
+    //I2CConfigure(I2C_BUS, I2C_ENABLE_SLAVE_CLOCK_STRETCHING|I2C_ENABLE_HIGH_SPEED);
+    //actualI2CClock = I2CSetFrequency(I2C1, GetPeripheralClock(), I2C_CLOCK_FREQ);
+    //if ( abs(actualI2CClock-I2C_CLOCK_FREQ) > I2C_CLOCK_FREQ/10 )
+    //{
+    //    DBPRINTF("I2C1 clock frequency (%ld) error exceeds 10%%\n", actualClock);
+    //}
+    //I2CEnable(I2C_BUS, TRUE);
+	//I2CClearStatus(I2C_BUS, I2C_TRANSMITTER_FULL);
 
     // Configure external interrupts on INT1 and INT2
-    PORTSetPinsDigitalIn(IOPORT_E, BIT_8 | BIT_9);
-	ConfigINT1(EXT_INT_PRI_2 | RISING_EDGE_INT | EXT_INT_ENABLE);
-	ConfigINT2(EXT_INT_PRI_2 | RISING_EDGE_INT | EXT_INT_ENABLE);
+    //PORTSetPinsDigitalIn(IOPORT_E, BIT_8 | BIT_9);
+	//ConfigINT1(EXT_INT_PRI_2 | RISING_EDGE_INT | EXT_INT_ENABLE);
+	//ConfigINT2(EXT_INT_PRI_2 | RISING_EDGE_INT | EXT_INT_ENABLE);
 	// Configure external interrupts on INT3
-	PORTSetPinsDigitalIn(IOPORT_A, BIT_14);
-	ConfigINT3(EXT_INT_PRI_2 | RISING_EDGE_INT | EXT_INT_ENABLE);
+	//PORTSetPinsDigitalIn(IOPORT_A, BIT_14);
+	//ConfigINT3(EXT_INT_PRI_2 | RISING_EDGE_INT | EXT_INT_ENABLE);
 
     /*Configure Multivector Interrupt Mode.  Using Single Vector Mode
     is expensive from a timing perspective, so most applications
@@ -185,168 +217,175 @@ int32_t main(void)
 
     //Configure I2C bus
     // Configure Accelerometer
-	UINT8 tOutData;
-	if (I2CSingleByteRead(ACCEL_ADDRESS, 0x0D, &tOutData))
-	{
-		if (tOutData == 0x2A)
-		{
-			DBPRINTF("OMG it works!!!\n");
-			if (!initMMA8452(ACCEL_SCALE, ACCEL_DATARATE)) {
-				WriteString("Failed to initilize Accelerometer");
-				return(0);
-			}
-		}
-		else
-			WriteString("Failed to verify Accelerometer");
-	}
-	if (I2CSingleByteRead(MAG_ADDRESS,  0x07 ,&tOutData))
-	{
-		if (tOutData == 0xC4)
-		{
-			DBPRINTF("OMG it works!!!\n");
-			if (!initMAG3110()) {
-				WriteString("Failed to initilize Magnetometer");
-				return(0);
-			}
-		}
-		else
-			WriteString("Failed to verify Magnetometer");
-	}
-	if (I2CSingleByteRead(GYRO_ADDRESS, 0x00, &tOutData))
-	{
-		if (tOutData == GYRO_ADDRESS)
-		{
-			DBPRINTF("OMG it works!!!\n");
-			if (!initITG3200()) {
-				WriteString("Failed to initilize Gyroscope");
-				return(0);
-			}
-		}
-		else
-			WriteString("Failed to verify Gyroscope");
-	}
+//	UINT8 tOutData;
+//	if (I2CSingleByteRead(ACCEL_ADDRESS, 0x0D, &tOutData))
+//	{
+//		if (tOutData == 0x2A)
+//		{
+//			DBPRINTF("OMG it works!!!\n");
+//			if (!initMMA8452(ACCEL_SCALE, ACCEL_DATARATE)) {
+//				WriteString("Failed to initilize Accelerometer");
+//				return(0);
+//			}
+//		}
+//		else
+//			WriteString("Failed to verify Accelerometer");
+//	}
+//	if (I2CSingleByteRead(MAG_ADDRESS,  0x07 ,&tOutData))
+//	{
+//		if (tOutData == 0xC4)
+//		{
+//			DBPRINTF("OMG it works!!!\n");
+//			if (!initMAG3110()) {
+//				WriteString("Failed to initilize Magnetometer");
+//				return(0);
+//			}
+//		}
+//		else
+//			WriteString("Failed to verify Magnetometer");
+//	}
+//	if (I2CSingleByteRead(GYRO_ADDRESS, 0x00, &tOutData))
+//	{
+//		if (tOutData == GYRO_ADDRESS)
+//		{
+//			DBPRINTF("OMG it works!!!\n");
+//			if (!initITG3200()) {
+//				WriteString("Failed to initilize Gyroscope");
+//				return(0);
+//			}
+//		}
+//		else
+//			WriteString("Failed to verify Gyroscope");
+//	}
+	WriteString("Type as you will :/\n\r");
 
     while(buttonFlag != 1)
     {
 		if (timer1Flag == 1) {
-			//Accelerometer Data
-			WriteString("\rAccel-> x: ");
-			convIntToString(accel_x, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" y: ");
-			convIntToString(accel_y, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" z: ");
-			convIntToString(accel_z, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			//Magnetometer Data
-			WriteString(" Mag-> x: ");
-			convIntToString(mag_x, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" y: ");
-			convIntToString(mag_y, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" z: ");
-			convIntToString(mag_z, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
+//			//Accelerometer Data
+//			WriteString("\rAccel-> x: ");
+//			convIntToString(accel_x, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			WriteString(" y: ");
+//			convIntToString(accel_y, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			WriteString(" z: ");
+//			convIntToString(accel_z, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			//Magnetometer Data
+//			WriteString(" Mag-> x: ");
+//			convIntToString(mag_x, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			WriteString(" y: ");
+//			convIntToString(mag_y, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			WriteString(" z: ");
+//			convIntToString(mag_z, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			timer1Flag = 0;
+//			//Gyroscope Data
+//			WriteString(" Gyro-> x: ");
+//			convIntToString(gyro_x, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			WriteString(" y: ");
+//			convIntToString(gyro_y, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+//			WriteString(" z: ");
+//			convIntToString(gyro_z, charArray);
+//			bufferSpaces(charArray);
+//			WriteString(charArray);
+			mPORTDToggleBits(BIT_7);
+			//convIntToString(an15Data, charArray);
+			//bufferSpaces(charArray);
+			//WriteString("\r\n");
+			//WriteString(charArray);
 			timer1Flag = 0;
-			//Gyroscope Data
-			WriteString(" Gyro-> x: ");
-			convIntToString(gyro_x, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" y: ");
-			convIntToString(gyro_y, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" z: ");
-			convIntToString(gyro_z, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			timer1Flag = 0;
 		}
-		if (readAccelFlag == 1) {
-			//Do i2c operations here to read accelerometer
-			UINT8 rawData[6]; // x/y/z accel register data stored here
-			// Read the six raw data registers into data array
-			I2CMultByteRead(ACCEL_ADDRESS, 0x01, 6, &rawData[0]);
-			
-			int tData, i;
-			/* loop to calculate 12-bit ADC and g value for each axis */
-			for (i=0; i<6; i+=2)
-			{
-				// Turn the MSB and LSB into a 12-bit value
-				tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
-				// If the number is negative, we have to make it so manually (no 12-bit data type)
-				if (rawData[i] > 0x7F)
-					tData -= 4096;
-				if (i == 0)
-					accel_x = tData;
-				else if (i == 2)
-					accel_y = tData;
-				else
-					accel_z = tData;
-			}
-			readAccelFlag = 0;
-			EnableINT1;
-		}
-		if (readMagFlag == 1) {
-			//Do i2c operations here to read magnetometer
-			UINT8 rawData[6];
-			I2CMultByteRead(MAG_ADDRESS, 0x01, 6, &rawData[0]);
-			
-			INT16 tData;
-			int i;
-			/* loop to calculate 16-bit ADC values for each axis */
-			for (i=0; i<6; i+=2)
-			{
-				// Turn the MSB and LSB into a 16-bit value
-				tData = ((rawData[i] << 8) | rawData[i+1]);
-				if (i == 0)
-					mag_x = tData;
-				else if (i == 2)
-					mag_y = tData;
-				else
-					mag_z = tData;
-			}
-			readMagFlag = 0;
-			EnableINT2;
-		}
-		if (readGyroFlag == 1) {
-			//Do i2c operations here to read gyroscope
-			UINT8 rawData[6]; // x/y/z velocity register data stored here
-			// Read the six raw data registers into data array
-			I2CMultByteRead(GYRO_ADDRESS, 0x1D, 6, &rawData[0]);
-
-			INT16 tData;
-			int i;
-			/* loop to calculate 16-bit ADC values for each axis */
-			for (i=0; i<6; i+=2)
-			{
-				// Turn the MSB and LSB into a 16-bit value
-				tData = ((rawData[i] << 8) | rawData[i+1]);
-				if (i == 0)
-					gyro_x = tData;
-				else if (i == 2)
-					gyro_y = tData;
-				else
-					gyro_z = tData;
-			}
-			readGyroFlag = 0;
-			EnableINT3;
-		}
+//		if (readAccelFlag == 1) {
+//			//Do i2c operations here to read accelerometer
+//			UINT8 rawData[6]; // x/y/z accel register data stored here
+//			// Read the six raw data registers into data array
+//			I2CMultByteRead(ACCEL_ADDRESS, 0x01, 6, &rawData[0]);
+//
+//			int tData, i;
+//			/* loop to calculate 12-bit ADC and g value for each axis */
+//			for (i=0; i<6; i+=2)
+//			{
+//				// Turn the MSB and LSB into a 12-bit value
+//				tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
+//				// If the number is negative, we have to make it so manually (no 12-bit data type)
+//				if (rawData[i] > 0x7F)
+//					tData -= 4096;
+//				if (i == 0)
+//					accel_x = tData;
+//				else if (i == 2)
+//					accel_y = tData;
+//				else
+//					accel_z = tData;
+//			}
+//			readAccelFlag = 0;
+//			EnableINT1;
+//		}
+//		if (readMagFlag == 1) {
+//			//Do i2c operations here to read magnetometer
+//			UINT8 rawData[6];
+//			I2CMultByteRead(MAG_ADDRESS, 0x01, 6, &rawData[0]);
+//
+//			INT16 tData;
+//			int i;
+//			/* loop to calculate 16-bit ADC values for each axis */
+//			for (i=0; i<6; i+=2)
+//			{
+//				// Turn the MSB and LSB into a 16-bit value
+//				tData = ((rawData[i] << 8) | rawData[i+1]);
+//				if (i == 0)
+//					mag_x = tData;
+//				else if (i == 2)
+//					mag_y = tData;
+//				else
+//					mag_z = tData;
+//			}
+//			readMagFlag = 0;
+//			EnableINT2;
+//		}
+//		if (readGyroFlag == 1) {
+//			//Do i2c operations here to read gyroscope
+//			UINT8 rawData[6]; // x/y/z velocity register data stored here
+//			// Read the six raw data registers into data array
+//			I2CMultByteRead(GYRO_ADDRESS, 0x1D, 6, &rawData[0]);
+//
+//			INT16 tData;
+//			int i;
+//			/* loop to calculate 16-bit ADC values for each axis */
+//			for (i=0; i<6; i+=2)
+//			{
+//				// Turn the MSB and LSB into a 16-bit value
+//				tData = ((rawData[i] << 8) | rawData[i+1]);
+//				if (i == 0)
+//					gyro_x = tData;
+//				else if (i == 2)
+//					gyro_y = tData;
+//				else
+//					gyro_z = tData;
+//			}
+//			readGyroFlag = 0;
+//			EnableINT3;
+//		}
     }
 
-	CloseINT1();
-	CloseINT2();
-	CloseINT3();
+	//CloseINT1();
+	//CloseINT2();
+	//CloseINT3();
     //CloseOC1();
+	//CloseADC10();
 
     return(1);
 }
@@ -369,8 +408,12 @@ void WriteChar(const char c)
         rs232TBuffer[TBufferTail] = c;
         TBufferTail = (TBufferTail + 1) % TBufferSize;
         //Set interrupt if transmitter is ready
-        if (UARTTransmitterIsReady(UART2))
+        if (UARTTransmitterIsReady(UART2)) {
             INTSetFlag(INT_SOURCE_UART_TX(UART2));
+		}
+		//If transmitter interrupt disabled, enable
+		if (!INTGetEnable(INT_SOURCE_UART_TX(UART2)))
+				INTEnable(INT_SOURCE_UART_TX(UART2), INT_ENABLED);
 }
 
 void bufferSpaces(char t[])
