@@ -88,8 +88,17 @@ void __ISR(_CHANGE_NOTICE_VECTOR, IPL2SOFT) ChangeNotice_Handler(void)
     //{
         // .. things to do .. toggle the button flag
     buttonFlag = 1;
-    mPORTAToggleBits(BIT_0);
+    //mPORTAToggleBits(BIT_0);
     //}
+}
+
+// ADC10 interrupt handler
+void __ISR(_ADC_VECTOR, IPL2SOFT) IntAdc10Handler(void)
+{
+	mAD1ClearIntFlag();
+	// determine which buffer is idle and create an offset
+	int offset = 8 * ((~ReadActiveBufferADC10() & 0x01));
+	an15Data = ReadADC10(offset);
 }
 
 // UART 2 interrupt handler
@@ -107,18 +116,20 @@ void __ISR(_UART2_VECTOR, IPL2SOFT) IntUart2Handler(void)
         INTClearFlag(INT_SOURCE_UART_RX(UART2));
 
         // Toggle LED to indicate UART activity
-        mPORTAToggleBits(BIT_7);
+        //mPORTAToggleBits(BIT_7);
     }
 
     // Transmit complete send next byte in buffer
-    if ( INTGetFlag(INT_SOURCE_UART_TX(UART2)) )
+    if (INTGetFlag(INT_SOURCE_UART_TX(UART2)))
     {
         //Clear the TX interrupt Flag
         INTClearFlag(INT_SOURCE_UART_TX(UART2));
 
         //if buffer empty exit
-        if (TBufferHead == TBufferTail)
+        if (TBufferHead == TBufferTail) {
+			INTEnable(INT_SOURCE_UART_TX(UART2), INT_DISABLED);
             return;
+		}
         //else transmit next character
         else
         {
