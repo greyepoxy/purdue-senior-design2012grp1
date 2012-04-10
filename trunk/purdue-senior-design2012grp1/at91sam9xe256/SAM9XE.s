@@ -319,14 +319,14 @@ PMC_MCKRDY      EQU     (1<<3)          ; Master Clock Status
 ;//   </h>
 ;// </e>
 PMC_SETUP       EQU     1
-PMC_SCER_Val    EQU     0x00000301
-PMC_PCER_Val    EQU     0x00400804
+PMC_SCER_Val    EQU     0x00000201
+PMC_PCER_Val    EQU     0x0040080C
 CKGR_MOR_Val    EQU     0x00000B01
 CKGR_PLLAR_Val  EQU     0x20483F0E
 CKGR_PLLBR_Val  EQU     0x00000000
 PMC_MCKR_Val    EQU     0x00000001
 PMC_PCK0_Val    EQU     0x00000001
-PMC_PCK1_Val    EQU     0x00000001
+PMC_PCK1_Val    EQU     0x00000005
 PMC_PCK2_Val    EQU     0x00000000
 PMC_PCK3_Val    EQU     0x00000000
 
@@ -639,7 +639,7 @@ SMC_CYCLE7_OFS  #       0x04            ; CS7 Cycle Register      Address Offset
 SMC_MODE7_OFS   #       0x04            ; CS7 Mode  Register      Address Offset
 
 ;// <e> Static Memory Controller (SMC)
-SMC_SETUP       EQU     0
+SMC_SETUP       EQU     1
 
 ;//   <e0.0> Setup Pin Configuration
 ;//     <o0.1>        Enable D16 .. D31 Pins

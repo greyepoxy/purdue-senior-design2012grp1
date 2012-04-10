@@ -34,13 +34,13 @@
 			TWI_ConfigureMaster(pTwi, TWCK, 18432000);
 
 			//Writing 0x80 to register 0x02 to set the frames per second to 15
-			TWI_StartWrite(pTwi, C_Addr, 0x02, 1, 0x80);
+			TWI_StartWrite(pTwi, C_Addr, 0x02, 1, 0x81);
 			while(!TWI_ByteSent(pTwi));
 			TWI_SendSTOPCondition(pTwi);
 
 			//Writing 0x03 to register 0x03 to set the camera to RGB and Black&White.
 			//Also starts image capture.
-			TWI_StartWrite(pTwi, C_Addr, 0x03, 1, 0x23);
+			TWI_StartWrite(pTwi, C_Addr, 0x03, 1, 0x22);
 			while(!TWI_ByteSent(pTwi));
 			TWI_SendSTOPCondition(pTwi);
 

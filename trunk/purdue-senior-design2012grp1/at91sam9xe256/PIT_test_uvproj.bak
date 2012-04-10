@@ -492,19 +492,19 @@
               <FilePath>.\header files\pio.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
               <FileName>TCM8230.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\header files\TCM8230.c</FilePath>
             </File>
             <File>
-              <FileName>isi2.c</FileName>
+              <FileName>isi.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\header files\isi2.c</FilePath>
+              <FilePath>.\header files\isi.c</FilePath>
+            </File>
+            <File>
+              <FileName>blink.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\blink.c</FilePath>
             </File>
           </Files>
         </Group>
