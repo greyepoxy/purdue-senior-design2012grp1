@@ -492,11 +492,6 @@
               <FilePath>.\header files\pio.c</FilePath>
             </File>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\main.c</FilePath>
-            </File>
-            <File>
               <FileName>TCM8230.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\header files\TCM8230.c</FilePath>
@@ -505,6 +500,11 @@
               <FileName>isi.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\header files\isi.c</FilePath>
+            </File>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\main.c</FilePath>
             </File>
           </Files>
         </Group>

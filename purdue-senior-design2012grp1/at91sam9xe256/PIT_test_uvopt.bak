@@ -134,7 +134,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGTARM</Key>
-          <Name>(2015=-1,-1,-1,-1,0)(5014=-1,-1,-1,-1,0)(5013=241,118,841,531,0)(5001=-1,-1,-1,-1,0)(7000=-1,-1,-1,-1,0)(7001=-1,-1,-1,-1,0)(7002=-1,-1,-1,-1,0)(5019=-1,-1,-1,-1,0)(9005=-1,-1,-1,-1,0)(9006=-1,-1,-1,-1,0)(9007=-1,-1,-1,-1,0)(9008=-1,-1,-1,-1,0)(9009=-1,-1,-1,-1,0)(9011=-1,-1,-1,-1,0)(2014=-1,-1,-1,-1,0)(2015=-1,-1,-1,-1,0)(2003=-1,-1,-1,-1,0)(5029=-1,-1,-1,-1,0)(2012=-1,-1,-1,-1,0)(5033=-1,-1,-1,-1,0)(2009=-1,-1,-1,-1,0)(5006=-1,-1,-1,-1,0)(2003=-1,-1,-1,-1,0)(2002=-1,-1,-1,-1,0)(125=-1,-1,-1,-1,0)(126=-1,-1,-1,-1,0)(5011=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(2007=15,35,347,265,0)</Name>
+          <Name>(2015=-1,-1,-1,-1,0)(5014=75,100,492,401,0)(5013=102,355,702,768,0)(5001=1097,78,1633,660,0)(7000=-1,-1,-1,-1,0)(7001=120,149,735,509,0)(7002=120,149,735,509,0)(5019=-1,-1,-1,-1,0)(9005=-1,-1,-1,-1,0)(9006=-1,-1,-1,-1,0)(9007=-1,-1,-1,-1,0)(9008=-1,-1,-1,-1,0)(9009=-1,-1,-1,-1,0)(9011=-1,-1,-1,-1,0)(2014=-1,-1,-1,-1,0)(2015=-1,-1,-1,-1,0)(2003=-1,-1,-1,-1,0)(5029=-1,-1,-1,-1,0)(2012=-1,-1,-1,-1,0)(5033=-1,-1,-1,-1,0)(2009=1248,227,1826,668,0)(5006=-1,-1,-1,-1,0)(2003=-1,-1,-1,-1,0)(2002=-1,-1,-1,-1,0)(125=-1,-1,-1,-1,0)(126=-1,-1,-1,-1,0)(5011=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(2007=15,35,347,265,0)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -144,21 +144,21 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>UL2ARM</Key>
-          <Name>-UM0215UBE -O14 -S135 -C0 -N00("ARM926EJ-S Core") -D00(0792603F) -L00(4) -FO7 -FD300000 -FC800 -FN1 -FF0AT91SAM9_256 -FS0200000 -FL040000</Name>
+          <Name>-UM0215UBE -O46 -S135 -C0 -N00("ARM926EJ-S Core") -D00(0792603F) -L00(4) -FO7 -FD300000 -FC800 -FN1 -FF0AT91SAM9_256 -FS0200000 -FL040000</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>39</LineNumber>
+          <LineNumber>112</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>2099432</Address>
+          <Address>0</Address>
           <ByteObject>0</ByteObject>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
+          <BreakIfRCount>0</BreakIfRCount>
           <Filename>main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression></Expression>
@@ -168,9 +168,23 @@
         <Mm>
           <WinNumber>1</WinNumber>
           <SubType>0</SubType>
-          <ItemText>ISI_Y2RSET1</ItemText>
+          <ItemText>0xFF10F8c0</ItemText>
         </Mm>
       </MemoryWindow1>
+      <MemoryWindow2>
+        <Mm>
+          <WinNumber>2</WinNumber>
+          <SubType>0</SubType>
+          <ItemText>0x00300000</ItemText>
+        </Mm>
+      </MemoryWindow2>
+      <MemoryWindow3>
+        <Mm>
+          <WinNumber>3</WinNumber>
+          <SubType>0</SubType>
+          <ItemText>0x00301000</ItemText>
+        </Mm>
+      </MemoryWindow3>
       <DebugFlag>
         <trace>0</trace>
         <periodic>1</periodic>
@@ -402,10 +416,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>23</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>95</TopLine>
+      <CurrentLine>95</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\header files\pit.c</PathWithFileName>
       <FilenameWithoutPath>pit.c</FilenameWithoutPath>
@@ -416,10 +430,10 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>21</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>0</TopLine>
-      <CurrentLine>0</CurrentLine>
+      <TopLine>42</TopLine>
+      <CurrentLine>42</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\header files\aic.c</PathWithFileName>
       <FilenameWithoutPath>aic.c</FilenameWithoutPath>
@@ -446,8 +460,8 @@
       <Focus>0</Focus>
       <ColumnNumber>65</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>340</TopLine>
-      <CurrentLine>357</CurrentLine>
+      <TopLine>294</TopLine>
+      <CurrentLine>294</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\header files\twi.c</PathWithFileName>
       <FilenameWithoutPath>twi.c</FilenameWithoutPath>
@@ -500,13 +514,13 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>44</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>44</TopLine>
-      <CurrentLine>62</CurrentLine>
+      <TopLine>20</TopLine>
+      <CurrentLine>43</CurrentLine>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\main.c</PathWithFileName>
-      <FilenameWithoutPath>main.c</FilenameWithoutPath>
+      <PathWithFileName>.\header files\TCM8230.c</PathWithFileName>
+      <FilenameWithoutPath>TCM8230.c</FilenameWithoutPath>
     </File>
     <File>
       <GroupNumber>2</GroupNumber>
@@ -514,27 +528,27 @@
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <Focus>0</Focus>
-      <ColumnNumber>0</ColumnNumber>
+      <ColumnNumber>38</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>20</TopLine>
-      <CurrentLine>34</CurrentLine>
-      <bDave2>0</bDave2>
-      <PathWithFileName>.\header files\TCM8230.c</PathWithFileName>
-      <FilenameWithoutPath>TCM8230.c</FilenameWithoutPath>
-    </File>
-    <File>
-      <GroupNumber>2</GroupNumber>
-      <FileNumber>0</FileNumber>
-      <FileType>1</FileType>
-      <tvExp>0</tvExp>
-      <Focus>0</Focus>
-      <ColumnNumber>17</ColumnNumber>
-      <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>20</TopLine>
-      <CurrentLine>37</CurrentLine>
+      <TopLine>59</TopLine>
+      <CurrentLine>59</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\header files\isi.c</PathWithFileName>
       <FilenameWithoutPath>isi.c</FilenameWithoutPath>
+    </File>
+    <File>
+      <GroupNumber>2</GroupNumber>
+      <FileNumber>23</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <Focus>0</Focus>
+      <ColumnNumber>37</ColumnNumber>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <TopLine>44</TopLine>
+      <CurrentLine>47</CurrentLine>
+      <bDave2>0</bDave2>
+      <PathWithFileName>.\main.c</PathWithFileName>
+      <FilenameWithoutPath>main.c</FilenameWithoutPath>
     </File>
   </Group>
 
@@ -551,8 +565,8 @@
       <Focus>0</Focus>
       <ColumnNumber>0</ColumnNumber>
       <tvExpOptDlg>0</tvExpOptDlg>
-      <TopLine>335</TopLine>
-      <CurrentLine>335</CurrentLine>
+      <TopLine>248</TopLine>
+      <CurrentLine>251</CurrentLine>
       <bDave2>0</bDave2>
       <PathWithFileName>.\SAM9XE.s</PathWithFileName>
       <FilenameWithoutPath>SAM9XE.s</FilenameWithoutPath>

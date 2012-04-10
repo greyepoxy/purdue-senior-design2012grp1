@@ -664,12 +664,12 @@ ARM Macro Assembler    Page 11
   321 00000000 00000001 
                        PMC_SETUP
                                EQU              1
-  322 00000000 00000301 
+  322 00000000 00000201 
                        PMC_SCER_Val
-                               EQU              0x00000301
-  323 00000000 00400804 
+                               EQU              0x00000201
+  323 00000000 0040080C 
                        PMC_PCER_Val
-                               EQU              0x00400804
+                               EQU              0x0040080C
   324 00000000 00000B01 
                        CKGR_MOR_Val
                                EQU              0x00000B01
@@ -685,9 +685,9 @@ ARM Macro Assembler    Page 11
   328 00000000 00000001 
                        PMC_PCK0_Val
                                EQU              0x00000001
-  329 00000000 00000001 
+  329 00000000 00000005 
                        PMC_PCK1_Val
-                               EQU              0x00000001
+                               EQU              0x00000005
   330 00000000 00000000 
                        PMC_PCK2_Val
                                EQU              0x00000000
@@ -1413,9 +1413,9 @@ ARM Macro Assembler    Page 22
                                                             et
   640 00000000         
   641 00000000         ;// <e> Static Memory Controller (SMC)
-  642 00000000 00000000 
+  642 00000000 00000001 
                        SMC_SETUP
-                               EQU              0
+                               EQU              1
   643 00000000         
   644 00000000         ;//   <e0.0> Setup Pin Configuration
   645 00000000         ;//     <o0.1>        Enable D16 .. D31 Pins
@@ -2763,7 +2763,7 @@ ARM Macro Assembler    Page 43
  1409 0000005C E14FE000        MRS              lr, SPSR
  1410 00000060 E92D4003        STMFD            sp!, {r0,r1,lr}
  1411 00000064         ; Write in the IVR to support Protect Mode */
- 1412 00000064 E59FE218        LDR              lr, =AT91C_BASE_AIC
+ 1412 00000064 E59FE21C        LDR              lr, =AT91C_BASE_AIC
  1413 00000068 E59E0100        LDR              r0, [r14, #AIC_IVR]
  1414 0000006C E58EE100        STR              lr, [r14, #AIC_IVR]
  1415 00000070         
@@ -2777,7 +2777,7 @@ ARM Macro Assembler    Page 43
 T
  1423 00000088         
  1424 00000088         ; Acknowledge interrupt */
- 1425 00000088 E59FE1F4        LDR              lr, =AT91C_BASE_AIC
+ 1425 00000088 E59FE1F8        LDR              lr, =AT91C_BASE_AIC
  1426 0000008C E58EE130        STR              lr, [r14, #AIC_EOICR]
  1427 00000090         
  1428 00000090         ; Restore interrupt context and branch back to calling c
@@ -2806,7 +2806,7 @@ ARM Macro Assembler    Page 44
                        ------------------------
  1442 000000A0         
  1443 000000A0                 IF               EEFC_SETUP != 0
- 1444 000000A0 E59F01E0        LDR              R0, =EEFC_FMR_Adr
+ 1444 000000A0 E59F01E4        LDR              R0, =EEFC_FMR_Adr
  1445 000000A4 E3A01C02        LDR              R1, =EEFC_FMR_Val
  1446 000000A8 E5801000        STR              R1, [R0, #0]
  1447 000000AC                 ENDIF
@@ -2817,20 +2817,20 @@ ARM Macro Assembler    Page 44
  1451 000000AC         
  1452 000000AC                 IF               (:LNOT::DEF:NO_PMC_INIT):LAND:(
 PMC_SETUP != 0)
- 1453 000000AC E59F01D8        LDR              R0, =PMC_BASE
+ 1453 000000AC E59F01DC        LDR              R0, =PMC_BASE
  1454 000000B0         
  1455 000000B0         ; System Clock Enable
- 1456 000000B0 E59F11D8        LDR              R1, =PMC_SCER_Val
+ 1456 000000B0 E59F11DC        LDR              R1, =PMC_SCER_Val
  1457 000000B4 E5801000        STR              R1, [R0, #PMC_SCER_OFS]
  1458 000000B8         
  1459 000000B8         ; Peripheral Clock Enable
- 1460 000000B8 E59F11D4        LDR              R1, =PMC_PCER_Val
+ 1460 000000B8 E59F11D8        LDR              R1, =PMC_PCER_Val
  1461 000000BC E5801010        STR              R1, [R0, #PMC_PCER_OFS]
  1462 000000C0         
  1463 000000C0         ; Setup Main Oscillator
  1464 000000C0                 IF               (CKGR_MOR_Val:AND:PMC_MOSCEN) !
 = 0
- 1465 000000C0 E59F11D0        LDR              R1, =CKGR_MOR_Val
+ 1465 000000C0 E59F11D4        LDR              R1, =CKGR_MOR_Val
  1466 000000C4 E5801020        STR              R1, [R0, #CKGR_MOR_OFS]
  1467 000000C8         
  1468 000000C8         ; Wait until Main Oscillator is stabilized
@@ -2844,7 +2844,7 @@ PMC_SETUP != 0)
  1474 000000D4         ; Setup the PLL A
  1475 000000D4                 IF               (CKGR_PLLAR_Val:AND:PMC_MUL) !=
  0
- 1476 000000D4 E59F11C0        LDR              R1, =CKGR_PLLAR_Val
+ 1476 000000D4 E59F11C4        LDR              R1, =CKGR_PLLAR_Val
  1477 000000D8 E5801028        STR              R1, [R0, #CKGR_PLLAR_OFS]
  1478 000000DC         
  1479 000000DC         ; Wait until PLL A is stabilized
@@ -2896,7 +2896,7 @@ ARM Macro Assembler    Page 45
  1518 00000114 E5801040        STR              R1, [R0, #PMC_PCK0_OFS]
  1519 00000118         
  1520 00000118         ; Setup Programmable Clock Register 1
- 1521 00000118 E3A01001        LDR              R1, =PMC_PCK1_Val
+ 1521 00000118 E3A01005        LDR              R1, =PMC_PCK1_Val
  1522 0000011C E5801044        STR              R1, [R0, #PMC_PCK1_OFS]
  1523 00000120         
  1524 00000120         ; Setup Programmable Clock Register 2
@@ -2917,280 +2917,343 @@ ARM Macro Assembler    Page 45
  1535 00000130         
  1536 00000130         ; Setup Static Memory Controller if enabled
  1537 00000130                 IF               SMC_SETUP != 0
- 1623                          ENDIF                        ; of IF      SMC_SE
-                                                            TUP != 0
- 1624 00000130         
- 1625 00000130         
- 1626 00000130         ; Setup Bus Matrix (MATRIX) ----------------------------
-                       ------------------------
+ 1538 00000130 E59F016C        LDR              R0, =SMC_BASE
+ 1539 00000134         
+ 1540 00000134         ; Setup pins
+ 1541 00000134                 IF               ((SMC_PIN_SETUP:AND:(1 <<  0)) 
+!= 0)
+ 1582                          ENDIF                        ; of IF      ((SMC_
 
 
 
 ARM Macro Assembler    Page 46 
 
 
- 1627 00000130         
- 1628 00000130                 IF               MATRIX_SETUP != 0
+                                                            PIN_SETUP:AND:(1 <<
+                                                              0)) != 0)
+ 1583 00000134         
+ 1584 00000134         ; Macro for setting the Static Memory Controller
+ 1585 00000134                 MACRO
+ 1586 00000134         $label  SMC_Cod          $cs
+ 1587 00000134         
+ 1588 00000134         $label  LDR              R1, =SMC_SETUP$cs._Val
+ 1589 00000134                 STR              R1, [R0, #SMC_SETUP$cs._OFS]
+ 1590 00000134                 LDR              R1, =SMC_PULSE$cs._Val
+ 1591 00000134                 STR              R1, [R0, #SMC_PULSE$cs._OFS]
+ 1592 00000134                 LDR              R1, =SMC_CYCLE$cs._Val
+ 1593 00000134                 STR              R1, [R0, #SMC_CYCLE$cs._OFS]
+ 1594 00000134                 LDR              R1, =SMC_MODE$cs._Val
+ 1595 00000134                 STR              R1, [R0, #SMC_MODE$cs._OFS]
+ 1596 00000134                 MEND
+ 1597 00000134         
+ 1598 00000134                 IF               SMC_CS0_SETUP != 0 ; Setup SMC 
+                                                            for CS0 if required
+                                                            
+ 1600                          ENDIF
+ 1601 00000134                 IF               SMC_CS1_SETUP != 0 ; Setup SMC 
+                                                            for CS1 if required
+                                                            
+ 1603                          ENDIF
+ 1604 00000134                 IF               SMC_CS2_SETUP != 0 ; Setup SMC 
+                                                            for CS2 if required
+                                                            
+ 1606                          ENDIF
+ 1607 00000134                 IF               SMC_CS3_SETUP != 0 ; Setup SMC 
+                                                            for CS3 if required
+                                                            
+ 1609                          ENDIF
+ 1610 00000134                 IF               SMC_CS4_SETUP != 0 ; Setup SMC 
+                                                            for CS4 if required
+                                                            
+ 1612                          ENDIF
+ 1613 00000134                 IF               SMC_CS5_SETUP != 0 ; Setup SMC 
+                                                            for CS5 if required
+                                                            
+ 1615                          ENDIF
+ 1616 00000134                 IF               SMC_CS6_SETUP != 0 ; Setup SMC 
+                                                            for CS6 if required
+                                                            
+ 1618                          ENDIF
+ 1619 00000134                 IF               SMC_CS7_SETUP != 0 ; Setup SMC 
+                                                            for CS7 if required
+                                                            
+ 1621                          ENDIF
+ 1622 00000134         
+ 1623 00000134                 ENDIF                        ; of IF      SMC_SE
+                                                            TUP != 0
+ 1624 00000134         
+ 1625 00000134         
+ 1626 00000134         ; Setup Bus Matrix (MATRIX) ----------------------------
+                       ------------------------
+ 1627 00000134         
+ 1628 00000134                 IF               MATRIX_SETUP != 0
  1665                          ENDIF                        ; of IF      MATRIX
-                                                            _SETUP != 0
- 1666 00000130         
- 1667 00000130         
- 1668 00000130         ; Setup External Bus Interface (EBI) -------------------
-                       ------------------------
- 1669 00000130         
- 1670 00000130                 IF               (:LNOT::DEF:NO_EBI_INIT):LAND:(
-EBI_SETUP != 0)
- 1671 00000130 E59F0168        LDR              R0, =MATRIX_BASE
- 1672 00000134 E3A01801        LDR              R1, =EBI_CSA_Val
- 1673 00000138 E580111C        STR              R1, [R0, #EBI_CSA_OFS]
- 1674 0000013C                 ENDIF                        ; of IF      (:LNOT
-                                                            ::DEF:NO_EBI_INIT):
-                                                            LAND:(EBI_SETUP != 
-                                                            0)
- 1675 0000013C         
- 1676 0000013C         
- 1677 0000013C         ; Setup SDRAM Controller (SDRAMC) ----------------------
-                       ------------------------
- 1678 0000013C         
- 1679 0000013C         ; Setup SDRAM Controller if enabled
- 1680 0000013C                 IF               (:LNOT::DEF:NO_SDRAM_INIT):LAND
-:(SDRAMC_SETUP != 0)
- 1681 0000013C         
- 1682 0000013C         ; Setup pins
- 1683 0000013C                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  0)
-) != 0)
- 1684 0000013C E59F0160        LDR              R0, =PIOC_BASE
- 1685 00000140 E3A01000        MOV              R1, #0
- 1686 00000144                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  1)
-) != 0)
- 1687 00000144 E59F115C        LDR              R1, =0xFFFF0000
- 1688 00000148                 ENDIF
- 1689 00000148                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  2)
-) != 0)
- 1691                          ENDIF
- 1692 00000148                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  3)
-) != 0)
- 1694                          ENDIF
- 1695 00000148                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  4)
-) != 0)
- 1697                          ENDIF
- 1698 00000148         
- 1699 00000148 E5801060        STR              R1, [R0, #PIO_PUDR_OFS]
- 1700 0000014C E5801070        STR              R1, [R0, #PIO_ASR_OFS]
- 1701 00000150 E5801004        STR              R1, [R0, #PIO_PDR_OFS]
- 1702 00000154                 ENDIF                        ; of IF      ((SDRA
-                                                            M_PIN_SETUP:AND:(1 
-                                                            <<  0)) != 0)
- 1703 00000154         
- 1704 00000154         ; Enable pins for SDRAM interfacing
- 1705 00000154 E59F0148        LDR              R0, =PIOC_BASE
- 1706 00000158 E59F1148        LDR              R1, =0xFFFF0000
- 1707 0000015C E5801060        STR              R1, [R0, #PIO_PUDR_OFS]
- 1708 00000160 E5801070        STR              R1, [R0, #PIO_ASR_OFS]
- 1709 00000164 E5801004        STR              R1, [R0, #PIO_PDR_OFS]
 
 
 
 ARM Macro Assembler    Page 47 
 
 
- 1710 00000168         
- 1711 00000168 E59F013C        LDR              R0, =SDRAMC_BASE
- 1712 0000016C E3A02202        LDR              R2, =EBI_CS1_ADDRESS
- 1713 00000170 E3A03000        MOV              R3, #0
- 1714 00000174         
- 1715 00000174         ; Setup Control Register of SDRAM Controller
- 1716 00000174 E59F1134        LDR              R1, =SDRAMC_CR_Val
- 1717 00000178 E5801008        STR              R1, [R0, #SDRAMC_CR_OFS]
- 1718 0000017C         
- 1719 0000017C E3A01FFA        MOV              R1, #1000
- 1720 00000180 E2511001 
-                       Wait_SDRAMC_0
-                               SUBS             R1, R1, #1
- 1721 00000184 1AFFFFFD        BNE              Wait_SDRAMC_0
- 1722 00000188         
- 1723 00000188         ; Write Nop Command to SDRAM
- 1724 00000188 E3A01001        MOV              R1, #CMD_NOP
- 1725 0000018C E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
- 1726 00000190 E5823000        STR              R3, [R2, #0]
- 1727 00000194         
- 1728 00000194         ; Write All Banks Precharge Command to SDRAM
- 1729 00000194 E3A01002        MOV              R1, #CMD_PRCGALL
- 1730 00000198 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
- 1731 0000019C E5823000        STR              R3, [R2, #0]
- 1732 000001A0         
- 1733 000001A0 E3A01FFA        MOV              R1, #1000
- 1734 000001A4 E2511001 
-                       Wait_SDRAMC_1
-                               SUBS             R1, R1, #1
- 1735 000001A8 1AFFFFFD        BNE              Wait_SDRAMC_1
- 1736 000001AC         
- 1737 000001AC         ; Provide 8 Auto Refresh to SDRAM
- 1738 000001AC E3A01004        MOV              R1, #CMD_RFSH
- 1739 000001B0 E1A04003        MOV              R4, R3
- 1740 000001B4         
- 1741 000001B4 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS] 
-                                                            ; Set 1 CBR
- 1742 000001B8 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1743 000001BC E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1744 000001C0 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1745 000001C4 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1746 000001C8 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1747 000001CC E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1748 000001D0 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1749 000001D4 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
- 1750 000001D8         
- 1751 000001D8         ; Write a Load Mode Register Command to SDRAM
- 1752 000001D8 E3A01003        MOV              R1, #CMD_LMR
- 1753 000001DC E3A04020        LDR              R4, =0x00000020
- 1754 000001E0 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS] 
-                                                            ; Set LMR Operation
-                                                            
- 1755 000001E4 E5824018        STR              R4, [R2, #24]
- 1756 000001E8         
- 1757 000001E8         ; Write Nop Command to SDRAM
- 1758 000001E8 E3A01001        MOV              R1, #CMD_NOP
- 1759 000001EC E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
- 1760 000001F0 E5823000        STR              R3, [R2, #0]
- 1761 000001F4         
+                                                            _SETUP != 0
+ 1666 00000134         
+ 1667 00000134         
+ 1668 00000134         ; Setup External Bus Interface (EBI) -------------------
+                       ------------------------
+ 1669 00000134         
+ 1670 00000134                 IF               (:LNOT::DEF:NO_EBI_INIT):LAND:(
+EBI_SETUP != 0)
+ 1671 00000134 E59F016C        LDR              R0, =MATRIX_BASE
+ 1672 00000138 E3A01801        LDR              R1, =EBI_CSA_Val
+ 1673 0000013C E580111C        STR              R1, [R0, #EBI_CSA_OFS]
+ 1674 00000140                 ENDIF                        ; of IF      (:LNOT
+                                                            ::DEF:NO_EBI_INIT):
+                                                            LAND:(EBI_SETUP != 
+                                                            0)
+ 1675 00000140         
+ 1676 00000140         
+ 1677 00000140         ; Setup SDRAM Controller (SDRAMC) ----------------------
+                       ------------------------
+ 1678 00000140         
+ 1679 00000140         ; Setup SDRAM Controller if enabled
+ 1680 00000140                 IF               (:LNOT::DEF:NO_SDRAM_INIT):LAND
+:(SDRAMC_SETUP != 0)
+ 1681 00000140         
+ 1682 00000140         ; Setup pins
+ 1683 00000140                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  0)
+) != 0)
+ 1684 00000140 E59F0164        LDR              R0, =PIOC_BASE
+ 1685 00000144 E3A01000        MOV              R1, #0
+ 1686 00000148                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  1)
+) != 0)
+ 1687 00000148 E59F1160        LDR              R1, =0xFFFF0000
+ 1688 0000014C                 ENDIF
+ 1689 0000014C                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  2)
+) != 0)
+ 1691                          ENDIF
+ 1692 0000014C                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  3)
+) != 0)
+ 1694                          ENDIF
+ 1695 0000014C                 IF               ((SDRAM_PIN_SETUP:AND:(1 <<  4)
+) != 0)
+ 1697                          ENDIF
+ 1698 0000014C         
+ 1699 0000014C E5801060        STR              R1, [R0, #PIO_PUDR_OFS]
+ 1700 00000150 E5801070        STR              R1, [R0, #PIO_ASR_OFS]
+ 1701 00000154 E5801004        STR              R1, [R0, #PIO_PDR_OFS]
+ 1702 00000158                 ENDIF                        ; of IF      ((SDRA
+                                                            M_PIN_SETUP:AND:(1 
+                                                            <<  0)) != 0)
+ 1703 00000158         
+ 1704 00000158         ; Enable pins for SDRAM interfacing
+ 1705 00000158 E59F014C        LDR              R0, =PIOC_BASE
+ 1706 0000015C E59F114C        LDR              R1, =0xFFFF0000
+ 1707 00000160 E5801060        STR              R1, [R0, #PIO_PUDR_OFS]
+ 1708 00000164 E5801070        STR              R1, [R0, #PIO_ASR_OFS]
+ 1709 00000168 E5801004        STR              R1, [R0, #PIO_PDR_OFS]
+ 1710 0000016C         
+ 1711 0000016C E59F0140        LDR              R0, =SDRAMC_BASE
+ 1712 00000170 E3A02202        LDR              R2, =EBI_CS1_ADDRESS
 
 
 
 ARM Macro Assembler    Page 48 
 
 
- 1762 000001F4         ; Enter Normal Mode
- 1763 000001F4 E3A01000        MOV              R1, #CMD_NORMAL
- 1764 000001F8 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
- 1765 000001FC E5823000        STR              R3, [R2, #0x00]
- 1766 00000200         
- 1767 00000200         ; Setup Refresh Timer Register
- 1768 00000200 E59F10AC        LDR              R1, =SDRAMC_TR_Val
- 1769 00000204 E5801004        STR              R1, [R0, #SDRAMC_TR_OFS]
- 1770 00000208         
- 1771 00000208         ; Setup Other SDRAM Controller Registers
- 1772 00000208 E3A01000        LDR              R1, =SDRAMC_LPR_Val
- 1773 0000020C E5801010        STR              R1, [R0, #SDRAMC_LPR_OFS]
- 1774 00000210 E3A01000        LDR              R1, =SDRAMC_MDR_Val
- 1775 00000214 E5801024        STR              R1, [R0, #SDRAMC_MDR_OFS]
- 1776 00000218                 ENDIF                        ; of IF      (:LNOT
-                                                            ::DEF:NO_SDRAM_INIT
-                                                            ):LAND:(SDRAMC_SETU
-                                                            P != 0)
- 1777 00000218         
- 1778 00000218         
- 1779 00000218         ; Watchdog Timer Setup ---------------------------------
-                       ------------------------
- 1780 00000218         
- 1781 00000218                 IF               WDT_Val != 0
- 1782 00000218 E59F0098        LDR              R0, =WDT_BASE 
-                                                            ; Disable Watchdog
- 1783 0000021C E3A01902        LDR              R1, =WDT_Val
- 1784 00000220 E5801004        STR              R1, [R0, #WDT_MR_OFS]
- 1785 00000224                 ENDIF
- 1786 00000224         
- 1787 00000224         
- 1788 00000224         ; Copy Exception Vectors to Internal RAM ---------------
-                       ------------------------
- 1789 00000224         
- 1790 00000224                 IF               :DEF:VEC_TO_RAM
- 1797                          ENDIF
- 1798 00000224         
- 1799 00000224         
- 1800 00000224         ; Remap on-chip RAM to address 0 -----------------------
-                       ------------------------
- 1801 00000224         
- 1802 00000224                 IF               :DEF:REMAP
- 1806                          ENDIF
- 1807 00000224         
- 1808 00000224         
- 1809 00000224         ; Cache Setup ------------------------------------------
-                       ------------------------
- 1810 00000224         
- 1811 00000224                 IF               ICACHE_SETUP != 0
- 1812 00000224 EE110F10        MRC              p15, 0, R0, c1, c0, 0 ; Enable 
-                                                            Instruction Cache
- 1813 00000228 E3800A01        ORR              R0, R0, #ICACHE_ENABLE
- 1814 0000022C EE010F10        MCR              p15, 0, R0, c1, c0, 0
- 1815 00000230                 ENDIF
- 1816 00000230         
- 1817 00000230         
- 1818 00000230         ; Setup Stack for each mode ----------------------------
-                       ------------------------
- 1819 00000230         
+ 1713 00000174 E3A03000        MOV              R3, #0
+ 1714 00000178         
+ 1715 00000178         ; Setup Control Register of SDRAM Controller
+ 1716 00000178 E59F1138        LDR              R1, =SDRAMC_CR_Val
+ 1717 0000017C E5801008        STR              R1, [R0, #SDRAMC_CR_OFS]
+ 1718 00000180         
+ 1719 00000180 E3A01FFA        MOV              R1, #1000
+ 1720 00000184 E2511001 
+                       Wait_SDRAMC_0
+                               SUBS             R1, R1, #1
+ 1721 00000188 1AFFFFFD        BNE              Wait_SDRAMC_0
+ 1722 0000018C         
+ 1723 0000018C         ; Write Nop Command to SDRAM
+ 1724 0000018C E3A01001        MOV              R1, #CMD_NOP
+ 1725 00000190 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
+ 1726 00000194 E5823000        STR              R3, [R2, #0]
+ 1727 00000198         
+ 1728 00000198         ; Write All Banks Precharge Command to SDRAM
+ 1729 00000198 E3A01002        MOV              R1, #CMD_PRCGALL
+ 1730 0000019C E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
+ 1731 000001A0 E5823000        STR              R3, [R2, #0]
+ 1732 000001A4         
+ 1733 000001A4 E3A01FFA        MOV              R1, #1000
+ 1734 000001A8 E2511001 
+                       Wait_SDRAMC_1
+                               SUBS             R1, R1, #1
+ 1735 000001AC 1AFFFFFD        BNE              Wait_SDRAMC_1
+ 1736 000001B0         
+ 1737 000001B0         ; Provide 8 Auto Refresh to SDRAM
+ 1738 000001B0 E3A01004        MOV              R1, #CMD_RFSH
+ 1739 000001B4 E1A04003        MOV              R4, R3
+ 1740 000001B8         
+ 1741 000001B8 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS] 
+                                                            ; Set 1 CBR
+ 1742 000001BC E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1743 000001C0 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1744 000001C4 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1745 000001C8 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1746 000001CC E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1747 000001D0 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1748 000001D4 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1749 000001D8 E5824000        STR              R4, [R2, #0x00] ; Perform CBR
+ 1750 000001DC         
+ 1751 000001DC         ; Write a Load Mode Register Command to SDRAM
+ 1752 000001DC E3A01003        MOV              R1, #CMD_LMR
+ 1753 000001E0 E3A04020        LDR              R4, =0x00000020
+ 1754 000001E4 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS] 
+                                                            ; Set LMR Operation
+                                                            
+ 1755 000001E8 E5824018        STR              R4, [R2, #24]
+ 1756 000001EC         
+ 1757 000001EC         ; Write Nop Command to SDRAM
+ 1758 000001EC E3A01001        MOV              R1, #CMD_NOP
+ 1759 000001F0 E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
+ 1760 000001F4 E5823000        STR              R3, [R2, #0]
+ 1761 000001F8         
+ 1762 000001F8         ; Enter Normal Mode
+ 1763 000001F8 E3A01000        MOV              R1, #CMD_NORMAL
+ 1764 000001FC E5801000        STR              R1, [R0, #SDRAMC_MR_OFS]
 
 
 
 ARM Macro Assembler    Page 49 
 
 
- 1820 00000230 E59F0084        LDR              R0, =Stack_Top
- 1821 00000234         
- 1822 00000234         ;  Enter Undefined Instruction Mode and set its Stack Po
-                       inter
- 1823 00000234 E321F0DB        MSR              CPSR_c, #Mode_UND:OR:I_Bit:OR:F
-_Bit
- 1824 00000238 E1A0D000        MOV              SP, R0
- 1825 0000023C E2400000        SUB              R0, R0, #UND_Stack_Size
- 1826 00000240         
- 1827 00000240         ;  Enter Abort Mode and set its Stack Pointer
- 1828 00000240 E321F0D7        MSR              CPSR_c, #Mode_ABT:OR:I_Bit:OR:F
-_Bit
- 1829 00000244 E1A0D000        MOV              SP, R0
- 1830 00000248 E2400000        SUB              R0, R0, #ABT_Stack_Size
- 1831 0000024C         
- 1832 0000024C         ;  Enter FIQ Mode and set its Stack Pointer
- 1833 0000024C E321F0D1        MSR              CPSR_c, #Mode_FIQ:OR:I_Bit:OR:F
-_Bit
- 1834 00000250 E1A0D000        MOV              SP, R0
- 1835 00000254 E2400000        SUB              R0, R0, #FIQ_Stack_Size
- 1836 00000258         
- 1837 00000258         ;  Enter IRQ Mode and set its Stack Pointer
- 1838 00000258 E321F0D2        MSR              CPSR_c, #Mode_IRQ:OR:I_Bit:OR:F
-_Bit
- 1839 0000025C E1A0D000        MOV              SP, R0
- 1840 00000260 E2400080        SUB              R0, R0, #IRQ_Stack_Size
- 1841 00000264         
- 1842 00000264         ;  Enter Supervisor Mode and set its Stack Pointer
- 1843 00000264 E321F0D3        MSR              CPSR_c, #Mode_SVC:OR:I_Bit:OR:F
-_Bit
- 1844 00000268 E1A0D000        MOV              SP, R0
- 1845 0000026C E2400008        SUB              R0, R0, #SVC_Stack_Size
- 1846 00000270         
- 1847 00000270         ;  Enter User Mode and set its Stack Pointer
- 1848 00000270 E321F010        MSR              CPSR_c, #Mode_USR
- 1849 00000274                 IF               :DEF:__MICROLIB
- 1854 00000274         
- 1855 00000274 E1A0D000        MOV              SP, R0
- 1856 00000278 E24DAB01        SUB              SL, SP, #USR_Stack_Size
- 1857 0000027C         
- 1858 0000027C                 ENDIF
- 1859 0000027C         
- 1860 0000027C         ; Enter the C code -------------------------------------
+ 1765 00000200 E5823000        STR              R3, [R2, #0x00]
+ 1766 00000204         
+ 1767 00000204         ; Setup Refresh Timer Register
+ 1768 00000204 E59F10B0        LDR              R1, =SDRAMC_TR_Val
+ 1769 00000208 E5801004        STR              R1, [R0, #SDRAMC_TR_OFS]
+ 1770 0000020C         
+ 1771 0000020C         ; Setup Other SDRAM Controller Registers
+ 1772 0000020C E3A01000        LDR              R1, =SDRAMC_LPR_Val
+ 1773 00000210 E5801010        STR              R1, [R0, #SDRAMC_LPR_OFS]
+ 1774 00000214 E3A01000        LDR              R1, =SDRAMC_MDR_Val
+ 1775 00000218 E5801024        STR              R1, [R0, #SDRAMC_MDR_OFS]
+ 1776 0000021C                 ENDIF                        ; of IF      (:LNOT
+                                                            ::DEF:NO_SDRAM_INIT
+                                                            ):LAND:(SDRAMC_SETU
+                                                            P != 0)
+ 1777 0000021C         
+ 1778 0000021C         
+ 1779 0000021C         ; Watchdog Timer Setup ---------------------------------
                        ------------------------
- 1861 0000027C         
- 1862 0000027C                 IMPORT           __main
- 1863 0000027C E59F003C        LDR              R0, =__main
- 1864 00000280 E12FFF10        BX               R0
- 1865 00000284         
- 1866 00000284         
- 1867 00000284         
- 1868 00000284                 IF               :DEF:__MICROLIB
- 1874 00000284         ; User Initial Stack & Heap
- 1875 00000284 FFFFF000 
-              FFFFFA00 
-              FFFFFC00 
-              00000301 
-              00400804 
-              00000B01 
+ 1780 0000021C         
+ 1781 0000021C                 IF               WDT_Val != 0
+ 1782 0000021C E59F009C        LDR              R0, =WDT_BASE 
+                                                            ; Disable Watchdog
+ 1783 00000220 E3A01902        LDR              R1, =WDT_Val
+ 1784 00000224 E5801004        STR              R1, [R0, #WDT_MR_OFS]
+ 1785 00000228                 ENDIF
+ 1786 00000228         
+ 1787 00000228         
+ 1788 00000228         ; Copy Exception Vectors to Internal RAM ---------------
+                       ------------------------
+ 1789 00000228         
+ 1790 00000228                 IF               :DEF:VEC_TO_RAM
+ 1797                          ENDIF
+ 1798 00000228         
+ 1799 00000228         
+ 1800 00000228         ; Remap on-chip RAM to address 0 -----------------------
+                       ------------------------
+ 1801 00000228         
+ 1802 00000228                 IF               :DEF:REMAP
+ 1806                          ENDIF
+ 1807 00000228         
+ 1808 00000228         
+ 1809 00000228         ; Cache Setup ------------------------------------------
+                       ------------------------
+ 1810 00000228         
+ 1811 00000228                 IF               ICACHE_SETUP != 0
+ 1812 00000228 EE110F10        MRC              p15, 0, R0, c1, c0, 0 ; Enable 
+                                                            Instruction Cache
+ 1813 0000022C E3800A01        ORR              R0, R0, #ICACHE_ENABLE
+ 1814 00000230 EE010F10        MCR              p15, 0, R0, c1, c0, 0
+ 1815 00000234                 ENDIF
+ 1816 00000234         
+ 1817 00000234         
+ 1818 00000234         ; Setup Stack for each mode ----------------------------
+                       ------------------------
+ 1819 00000234         
+ 1820 00000234 E59F0088        LDR              R0, =Stack_Top
+ 1821 00000238         
+ 1822 00000238         ;  Enter Undefined Instruction Mode and set its Stack Po
 
 
 
 ARM Macro Assembler    Page 50 
 
 
+                       inter
+ 1823 00000238 E321F0DB        MSR              CPSR_c, #Mode_UND:OR:I_Bit:OR:F
+_Bit
+ 1824 0000023C E1A0D000        MOV              SP, R0
+ 1825 00000240 E2400000        SUB              R0, R0, #UND_Stack_Size
+ 1826 00000244         
+ 1827 00000244         ;  Enter Abort Mode and set its Stack Pointer
+ 1828 00000244 E321F0D7        MSR              CPSR_c, #Mode_ABT:OR:I_Bit:OR:F
+_Bit
+ 1829 00000248 E1A0D000        MOV              SP, R0
+ 1830 0000024C E2400000        SUB              R0, R0, #ABT_Stack_Size
+ 1831 00000250         
+ 1832 00000250         ;  Enter FIQ Mode and set its Stack Pointer
+ 1833 00000250 E321F0D1        MSR              CPSR_c, #Mode_FIQ:OR:I_Bit:OR:F
+_Bit
+ 1834 00000254 E1A0D000        MOV              SP, R0
+ 1835 00000258 E2400000        SUB              R0, R0, #FIQ_Stack_Size
+ 1836 0000025C         
+ 1837 0000025C         ;  Enter IRQ Mode and set its Stack Pointer
+ 1838 0000025C E321F0D2        MSR              CPSR_c, #Mode_IRQ:OR:I_Bit:OR:F
+_Bit
+ 1839 00000260 E1A0D000        MOV              SP, R0
+ 1840 00000264 E2400080        SUB              R0, R0, #IRQ_Stack_Size
+ 1841 00000268         
+ 1842 00000268         ;  Enter Supervisor Mode and set its Stack Pointer
+ 1843 00000268 E321F0D3        MSR              CPSR_c, #Mode_SVC:OR:I_Bit:OR:F
+_Bit
+ 1844 0000026C E1A0D000        MOV              SP, R0
+ 1845 00000270 E2400008        SUB              R0, R0, #SVC_Stack_Size
+ 1846 00000274         
+ 1847 00000274         ;  Enter User Mode and set its Stack Pointer
+ 1848 00000274 E321F010        MSR              CPSR_c, #Mode_USR
+ 1849 00000278                 IF               :DEF:__MICROLIB
+ 1854 00000278         
+ 1855 00000278 E1A0D000        MOV              SP, R0
+ 1856 0000027C E24DAB01        SUB              SL, SP, #USR_Stack_Size
+ 1857 00000280         
+ 1858 00000280                 ENDIF
+ 1859 00000280         
+ 1860 00000280         ; Enter the C code -------------------------------------
+                       ------------------------
+ 1861 00000280         
+ 1862 00000280                 IMPORT           __main
+ 1863 00000280 E59F0040        LDR              R0, =__main
+ 1864 00000284 E12FFF10        BX               R0
+ 1865 00000288         
+ 1866 00000288         
+ 1867 00000288         
+ 1868 00000288                 IF               :DEF:__MICROLIB
+ 1874 00000288         ; User Initial Stack & Heap
+ 1875 00000288 FFFFF000 
+              FFFFFA00 
+              FFFFFC00 
+              00000201 
+              0040080C 
+              00000B01 
               20483F0E 
+              FFFFEC00 
               FFFFEE00 
+
+
+
+ARM Macro Assembler    Page 51 
+
+
               FFFFF800 
               FFFF0000 
               FFFFEA00 
@@ -3486,7 +3549,7 @@ Symbol: Vectors
    Uses
       None
 Comment: Vectors unused
-Wait_SDRAMC_0 00000180
+Wait_SDRAMC_0 00000184
 
 Symbol: Wait_SDRAMC_0
    Definitions
@@ -3494,7 +3557,7 @@ Symbol: Wait_SDRAMC_0
    Uses
       At line 1721 in file SAM9XE.s
 Comment: Wait_SDRAMC_0 used once
-Wait_SDRAMC_1 000001A4
+Wait_SDRAMC_1 000001A8
 
 
 
@@ -4603,7 +4666,7 @@ Symbol: PMC_PCER_OFS
    Uses
       At line 1461 in file SAM9XE.s
 Comment: PMC_PCER_OFS used once
-PMC_PCER_Val 00400804
+PMC_PCER_Val 0040080C
 
 Symbol: PMC_PCER_Val
    Definitions
@@ -4635,7 +4698,7 @@ Symbol: PMC_PCK1_OFS
    Uses
       At line 1522 in file SAM9XE.s
 Comment: PMC_PCK1_OFS used once
-PMC_PCK1_Val 00000001
+PMC_PCK1_Val 00000005
 
 
 
@@ -4719,7 +4782,7 @@ Symbol: PMC_SCER_OFS
    Uses
       At line 1457 in file SAM9XE.s
 Comment: PMC_SCER_OFS used once
-PMC_SCER_Val 00000301
+PMC_SCER_Val 00000201
 
 Symbol: PMC_SCER_Val
    Definitions
@@ -4877,24 +4940,24 @@ Symbol: SMC_BASE
    Definitions
       At line 598 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_BASE unused
+      At line 1538 in file SAM9XE.s
+Comment: SMC_BASE used once
 SMC_CS0_SETUP 00000000
 
 Symbol: SMC_CS0_SETUP
    Definitions
       At line 720 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS0_SETUP unused
+      At line 1598 in file SAM9XE.s
+Comment: SMC_CS0_SETUP used once
 SMC_CS1_SETUP 00000000
 
 Symbol: SMC_CS1_SETUP
    Definitions
       At line 788 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS1_SETUP unused
+      At line 1601 in file SAM9XE.s
+Comment: SMC_CS1_SETUP used once
 SMC_CS2_SETUP 00000000
 
 
@@ -4907,48 +4970,48 @@ Symbol: SMC_CS2_SETUP
    Definitions
       At line 856 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS2_SETUP unused
+      At line 1604 in file SAM9XE.s
+Comment: SMC_CS2_SETUP used once
 SMC_CS3_SETUP 00000000
 
 Symbol: SMC_CS3_SETUP
    Definitions
       At line 924 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS3_SETUP unused
+      At line 1607 in file SAM9XE.s
+Comment: SMC_CS3_SETUP used once
 SMC_CS4_SETUP 00000000
 
 Symbol: SMC_CS4_SETUP
    Definitions
       At line 992 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS4_SETUP unused
+      At line 1610 in file SAM9XE.s
+Comment: SMC_CS4_SETUP used once
 SMC_CS5_SETUP 00000000
 
 Symbol: SMC_CS5_SETUP
    Definitions
       At line 1060 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS5_SETUP unused
+      At line 1613 in file SAM9XE.s
+Comment: SMC_CS5_SETUP used once
 SMC_CS6_SETUP 00000000
 
 Symbol: SMC_CS6_SETUP
    Definitions
       At line 1128 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS6_SETUP unused
+      At line 1616 in file SAM9XE.s
+Comment: SMC_CS6_SETUP used once
 SMC_CS7_SETUP 00000000
 
 Symbol: SMC_CS7_SETUP
    Definitions
       At line 1196 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_CS7_SETUP unused
+      At line 1619 in file SAM9XE.s
+Comment: SMC_CS7_SETUP used once
 SMC_CYCLE0_OFS 00000008
 
 Symbol: SMC_CYCLE0_OFS
@@ -5241,8 +5304,8 @@ Symbol: SMC_PIN_SETUP
    Definitions
       At line 656 in file SAM9XE.s
    Uses
-      None
-Comment: SMC_PIN_SETUP unused
+      At line 1541 in file SAM9XE.s
+Comment: SMC_PIN_SETUP used once
 SMC_PULSE0_OFS 00000004
 
 Symbol: SMC_PULSE0_OFS
@@ -5383,7 +5446,7 @@ Symbol: SMC_PULSE7_Val
    Uses
       None
 Comment: SMC_PULSE7_Val unused
-SMC_SETUP 00000000
+SMC_SETUP 00000001
 
 Symbol: SMC_SETUP
    Definitions
