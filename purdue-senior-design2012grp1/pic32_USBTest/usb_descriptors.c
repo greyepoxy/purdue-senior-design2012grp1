@@ -189,7 +189,7 @@ ROM BYTE configDescriptor1[]={
     1,                      // Number of interfaces in this cfg
     1,                      // Index value of this configuration
     0,                      // Configuration string index
-    _DEFAULT | _SELF,               // Attributes, see usb_device.h
+    _DEFAULT //| _SELF,               // Attributes, see usb_device.h, not self powered when usb plugged in
     50,                     // Max power consumption (2X mA)
 							
     /* Interface Descriptor */
