@@ -20,8 +20,7 @@ static const int Buffer = 0x00301000;
 //static const int Fb_offset = ((128*96*2)/8);
 static int frame_ready_flag;
 #define DMA_BEGIN  0x00301000;
-//static char Matrix[64][96];
-//unsigned char volatile * const startofdma = (unsigned char *)DMA_BEGIN;
+unsigned char Matrix[(64*96)];//[4076];//[24576];//[64][96];//[128][96];//[24576];
 
 
 //------------------------------------------------------------------------------
@@ -43,11 +42,9 @@ __irq void ISI_Handler(void){
 //		Main Function
 //------------------------------------------------------------------------------
 int main(void) {
-	int i = 0,j;
-	unsigned char byte1 = 0, byte2 = 0;
-	unsigned char byte3 = 0, byte4 = 0;
+	int i = 0,j,k;
 	unsigned char *startofdma;
-	int temp = 0;
+	unsigned char byte1, byte2, rbyte1, rbyte2;
 	startofdma = (unsigned char *)DMA_BEGIN;
 
 
@@ -97,6 +94,13 @@ int main(void) {
 			i++;
 			frame_ready_flag = 0;
 
+			// POINT THE BUFFER TO CRAP
+			for(i = 0; i <= 1; i++){
+				FbList[i].Current = 0x10000000;
+				FbList[i].Next = (int)&FbList[i+1];
+			}
+			FbList[i-1].Next = (int)&FbList[0];
+
 			//enabling interupts
 			AIC_ConfigureIT(AT91C_ID_ISI,AT91C_AIC_PRIOR_HIGHEST,(void (*)())ISI_Handler);
 			AIC_EnableIT(AT91C_ID_ISI);
@@ -107,12 +111,72 @@ int main(void) {
 			AT91C_BASE_ISI->ISI_CR1 = 0x02000000;
     		AT91C_BASE_ISI->ISI_CR2 = 0xC080B060;
 
-			byte1 = startofdma[0];
-			byte2 = *startofdma;
-			//byte2 = startofdma[1];
-			byte3 = startofdma[2];
-			byte4 = startofdma[3];
+
+			// START UNPACKING/PACKING THE RED MATRIX
+
+
+			k = 0;	//K IS THE POINTER TO THE NEXT SPOT IN THE DMA	  
+			j =	0;
+			for(i = 0; i < 24576; i++)//while(i < 24576)//28672)// 12288)			 //SIZE OF ONE MATRIX (64X96)(x2x2)
+			{
+				byte1 = startofdma[k];
+				k++;
+				byte2 = startofdma[k];
+				k++;
+				byte1 = byte1 >> 4;
+				byte1 = byte1 | 0xF0;
+				byte2 = byte2 << 4;
+				byte2 = byte2 | 0x0F;
+				rbyte1 = byte1 & byte2;  //rbyte1 has first pixel of RGB dualbyte
+					
+				byte1 = startofdma[k];
+				k++;
+				byte2 = startofdma[k];
+				k++;
+				byte1 = byte1 >> 4;
+				byte1 = byte1 | 0xF0;
+				byte2 = byte2 << 4;
+				byte2 = byte2 | 0x0F;
+				rbyte2 = byte1 & byte2; //rbyte2 has second pixel of RGB dualbyte
+				j++;
+				if(j % 2 == 1)
+				{
+				 	rbyte1 = rbyte1 & 0xF8;
+					Matrix[i/2] = rbyte1;
+				}
+				if(j == 128)
+				{
+					j = 0;
+				}
+					
 			
+			}	//AFTER THIS LOOP, THE MATRIX OF RED IS FILLED
+
+			/*
+			rbyte1 = 0;
+			for(i = 0; i < 96; i++)
+			{
+			 	for(j = 0; j < 64; j++)
+				{
+					if(Matrix[j][i] > rbyte1)
+					{
+					 	rbyte1 = Matrix[j][i];
+						byte1 = j;
+						byte2 = i;
+					}	
+				}
+			}	 //AFTER THIS LOOP, BYTE1 HAS J COORDINATE, BYTE2 HAS I COORDINATE
+				 //OF MAX VALUE PIXEL IN THE ARRAY
+			*/
+
+
+			// POINT BUFFER BACK TO THE RIGHT SPOT
+			for(i = 0; i <= 1; i++){
+				FbList[i].Current = Buffer;
+				FbList[i].Next = (int)&FbList[i+1];
+			};
+			FbList[i-1].Next = (int)&FbList[0];
+			i=0;
 			
 
 		};
