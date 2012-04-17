@@ -7,7 +7,7 @@
 /* Microcontroller MIPs (FCY) */
 #define SYS_FREQ     80000000L
 #define FCY          SYS_FREQ
-#define PB_DIV       2
+#define PB_DIV       1
 
 /******************************************************************************/
 /* System Function Prototypes                                                 */
