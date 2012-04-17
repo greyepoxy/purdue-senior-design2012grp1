@@ -53,6 +53,9 @@ USB_HANDLE USBGenericInHandle;
 int accel_x;
 int accel_y;
 int accel_z;
+int accel_x_off;
+int accel_y_off;
+int accel_z_off;
 INT16 mag_x, mag_y, mag_z;
 INT16 gyro_x, gyro_y, gyro_z;
 volatile char rs232TBuffer[TBufferSize];
@@ -113,6 +116,13 @@ int32_t main(void)
     checkatd = 0;
     tcount = 0;
     distance = 0;
+    x_pix = 0;
+    y_pix = 0;
+    calibration = 0;
+    accel_x_off = 0;
+    accel_y_off = 0;
+    accel_z_off = 0;
+
 
     InitializeSystem();
 
@@ -122,184 +132,213 @@ int32_t main(void)
 
     while(1)
     {
-		// Application-specific tasks.
-		// Application related code may be added here, or in the ProcessIO() function.
+
+        // This checks to see if something is in the priority queue and if it is it puts the flag
+        // at the head into c_flag and increments the head.
         if(front != rear){
             c_flag = queue[front];
             queue[front] = 0;
             front = (front + 1) % 5;
         }
+
+        // This is a usb function that sends data over usb when sent the command 0x80
         ProcessIO();
+
+        //Debugging function that if not commmented out it sends the IMU data over RS232
         if (timer1Flag == 1) {
-                        //Accelerometer Data
-			/*WriteString("\rAccel-> x: ");
-			convIntToString(accel_x, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" y: ");
-			convIntToString(accel_y, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" z: ");
-			convIntToString(accel_z, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			//Magnetometer Data
-			WriteString(" Mag-> x: ");
-			convIntToString(mag_x, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" y: ");
-			convIntToString(mag_y, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" z: ");
-			convIntToString(mag_z, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			timer1Flag = 0;
-			//Gyroscope Data
-			WriteString(" Gyro-> x: ");
-			convIntToString(gyro_x, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" y: ");
-			convIntToString(gyro_y, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			WriteString(" z: ");
-			convIntToString(gyro_z, charArray);
-			bufferSpaces(charArray);
-			WriteString(charArray);
-			mPORTDToggleBits(BIT_7);
-			convIntToString(an15Data, charArray);
-			bufferSpaces(charArray);
-			WriteString("\r\n");
-			WriteString(charArray);*/
-			timer1Flag = 0;
+            //Accelerometer Data
+            /*WriteString("\rAccel-> x: ");
+            convIntToString(accel_x, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString(" y: ");
+            convIntToString(accel_y, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString(" z: ");
+            convIntToString(accel_z, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            //Magnetometer Data
+            WriteString(" Mag-> x: ");
+            convIntToString(mag_x, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString(" y: ");
+            convIntToString(mag_y, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString(" z: ");
+            convIntToString(mag_z, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            timer1Flag = 0;
+            //Gyroscope Data
+            WriteString(" Gyro-> x: ");
+            convIntToString(gyro_x, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString(" y: ");
+            convIntToString(gyro_y, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString(" z: ");
+            convIntToString(gyro_z, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            mPORTDToggleBits(BIT_7);
+            convIntToString(an15Data, charArray);
+            bufferSpaces(charArray);
+            WriteString("\r\n");
+            WriteString(charArray);*/
+            timer1Flag = 0;
 	}
+
+
+        //Function for the Accelorometer that gets the acceleorometer data and puts it into the data array
 	if (c_flag == ACCEL_PRI) {
-			//Do i2c operations here to read accelerometer
-			UINT8 rawData[6]; // x/y/z accel register data stored here
-			// Read the six raw data registers into data array
-			I2CMultByteRead(ACCEL_ADDRESS, 0x01, 6, &rawData[0]);
+            //Do i2c operations here to read accelerometer
+            UINT8 rawData[6]; // x/y/z accel register data stored here
+            // Read the six raw data registers into data array
+            I2CMultByteRead(ACCEL_ADDRESS, 0x01, 6, &rawData[0]);
 
-			int tData, i;
-			/* loop to calculate 12-bit ADC and g value for each axis */
-			for (i=0; i<6; i+=2)
-			{
-				// Turn the MSB and LSB into a 12-bit value
-				tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
-				// If the number is negative, we have to make it so manually (no 12-bit data type)
-				if (rawData[i] > 0x7F)
-					tData -= 4096;
-				if (i == 0)
-					accel_x = tData;
-				else if (i == 2)
-					accel_y = tData;
-				else
-					accel_z = tData;
-			}
-                        data[0] = 0x11;
-                        data[1] = (char)(accel_x >> 8);
-                        data[2] = (char)accel_x;
-                        data[3] = (char)(accel_y >> 8);
-                        data[4] = (char)accel_y;
-                        data[5] = (char)(accel_z >> 8);
-                        data[6] = (char)accel_z;
-			EnableINT1;
+            int tData, i;
+            /* loop to calculate 12-bit ADC and g value for each axis */
+            for (i=0; i<6; i+=2)
+            {
+                // Turn the MSB and LSB into a 12-bit value
+                tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
+		// If the number is negative, we have to make it so manually (no 12-bit data type)
+		if (rawData[i] > 0x7F)
+                    tData -= 4096;
+		if (i == 0)
+                    accel_x = tData + accel_x_off;
+		else if (i == 2)
+                    accel_y = tData + accel_y_off;
+		else
+                    accel_z = tData + accel_z_off;
+            }
+            //Placing senor readings into the data array for USB transmission
+            if(calibration = '1'){
+                accel_x_off = accel_x;
+                accel_y_off = accel_y;
+                accel_z_off = accel_z;
+            }
+            data[0] = 0x11;
+            data[1] = (char)(accel_x >> 8);
+            data[2] = (char)accel_x;
+            data[3] = (char)(accel_y >> 8);
+            data[4] = (char)accel_y;
+            data[5] = (char)(accel_z >> 8);
+            data[6] = (char)accel_z;
+            //Reenable interrupts
+            EnableINT1;
 	}
+
+        //Function to read the Magtometer data
 	if (c_flag == MAG_PRI) {
-			//Do i2c operations here to read magnetometer
-			UINT8 rawData[6];
-			I2CMultByteRead(MAG_ADDRESS, 0x01, 6, &rawData[0]);
+            //Do i2c operations here to read magnetometer
+            UINT8 rawData[6];
+            I2CMultByteRead(MAG_ADDRESS, 0x01, 6, &rawData[0]);
 
-			INT16 tData;
-			int i;
+            INT16 tData;
+            int i;
 			/* loop to calculate 16-bit ADC values for each axis */
-			for (i=0; i<6; i+=2)
-			{
-				// Turn the MSB and LSB into a 16-bit value
-				tData = ((rawData[i] << 8) | rawData[i+1]);
-				if (i == 0)
-					mag_x = tData;
-				else if (i == 2)
-					mag_y = tData;
-				else
-					mag_z = tData;
-			}
-                        data[14] = 0x12;
-                        data[15] = (char)(mag_x >>8);
-                        data[16] = (char)mag_x;
-                        data[17] = (char)(mag_y >> 8);
-                        data[18] = (char)mag_y;
-                        data[19] = (char)(mag_z >> 8);
-                        data[20] = (char)mag_z;
-			
-			EnableINT0;
+            for (i=0; i<6; i+=2)
+            {
+                // Turn the MSB and LSB into a 16-bit value
+		tData = ((rawData[i] << 8) | rawData[i+1]);
+		if (i == 0)
+                    mag_x = tData;
+		else if (i == 2)
+                    mag_y = tData;
+		else
+                    mag_z = tData;
+            }
+
+            //Putting data into the data array for USB transmission
+            data[14] = 0x12;
+            data[15] = (char)(mag_x >>8);
+            data[16] = (char)mag_x;
+            data[17] = (char)(mag_y >> 8);
+            data[18] = (char)mag_y;
+            data[19] = (char)(mag_z >> 8);
+            data[20] = (char)mag_z;
+            //Reenabling interrupts
+            EnableINT0;
 	}
+
+        //This function reads in the gyro data and stores it for USB transmission
 	if (c_flag == GYRO_PRI) {
-			//Do i2c operations here to read gyroscope
-			UINT8 rawData[6]; // x/y/z velocity register data stored here
-			// Read the six raw data registers into data array
-			I2CMultByteRead(GYRO_ADDRESS, 0x1D, 6, &rawData[0]);
+            //Do i2c operations here to read gyroscope
+            UINT8 rawData[6]; // x/y/z velocity register data stored here
+            // Read the six raw data registers into data array
+            I2CMultByteRead(GYRO_ADDRESS, 0x1D, 6, &rawData[0]);
 
-			INT16 tData;
-			int i;
-			/* loop to calculate 16-bit ADC values for each axis */
-			for (i=0; i<6; i+=2)
-			{
-				// Turn the MSB and LSB into a 16-bit value
-				tData = ((rawData[i] << 8) | rawData[i+1]);
-				if (i == 0)
-					gyro_x = tData;
-				else if (i == 2)
-					gyro_y = tData;
-				else
-					gyro_z = tData;
-			}
-
-                        data[7] = 0x13;
-                        data[8] = (char)(gyro_x >> 8);
-                        data[9] = (char)gyro_x;
-                        data[10] = (char)(gyro_y >> 8);
-                        data[11] = (char)gyro_y;
-                        data[12] = (char)(gyro_z >> 8);
-                        data[13] = (char)gyro_z;
-			
-			EnableINT4;
+            INT16 tData;
+            int i;
+            /* loop to calculate 16-bit ADC values for each axis */
+            for (i=0; i<6; i+=2)
+            {
+                // Turn the MSB and LSB into a 16-bit value
+		tData = ((rawData[i] << 8) | rawData[i+1]);
+		if (i == 0)
+                    gyro_x = tData;
+		else if (i == 2)
+                    gyro_y = tData;
+		else
+                    gyro_z = tData;
+            }
+            //Putting the data into the data array for USB transmission
+            data[7] = 0x13;
+            data[8] = (char)(gyro_x >> 8);
+            data[9] = (char)gyro_x;
+            data[10] = (char)(gyro_y >> 8);
+            data[11] = (char)gyro_y;
+            data[12] = (char)(gyro_z >> 8);
+            data[13] = (char)gyro_z;
+            // Reanable interrupts
+            EnableINT4;
 	}
+
+        //This function calculates the distance using the tcount variable and can be made to output the data over
+        // RS232 and also store the data for USB transmission
         if(c_flag == DIS_PRI){
-            distance = ((340290 * tcount)/1000000) - 140;
+            //calculate the distance
+            distance = ((340290 * tcount)/1000000) - 740;
+            //prints out the distace calculation over RS232
             convIntToString(distance, charArray);
             bufferSpaces(charArray);
             WriteString(charArray);
+            //resets tcount
             tcount = 0;
+            //store data for USB transmission
             data[21] = 0x14;
             data[22] = (char)(distance >> 8);
             data[23] = (char) distance;
 
         }
 
+        //This function prepares the pixel displacement data for transmission over USB
         if(c_flag == CAM_PRI){
             data[24] = 0x15;
-            data[25] = 0x00;
-            data[26] = 0x00;
+            data[25] = x_pix;
+            data[26] = y_pix;
         }
    }//end while
 }
 
 static void InitializeSystem(void)
 {
-	#ifndef PIC32_STARTER_KIT
-		/*The JTAG is on by default on POR.  A PIC32 Starter Kit uses the JTAG, but
-		for other debug tool use, like ICD 3 and Real ICE, the JTAG should be off
-		to free up the JTAG I/O */
-		DDPCONbits.JTAGEN = 0;
-	#endif
+    #ifndef PIC32_STARTER_KIT
+        /*The JTAG is on by default on POR.  A PIC32 Starter Kit uses the JTAG, but
+	for other debug tool use, like ICD 3 and Real ICE, the JTAG should be off
+    	to free up the JTAG I/O */
+        DDPCONbits.JTAGEN = 0;
+    #endif
 
-	// some random register set by usb main > <
-	AD1PCFG = 0xFFFF;
+    // some random register set by usb main > <
+    AD1PCFG = 0xFFFF;
 
     SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
 
@@ -389,7 +428,7 @@ void ProcessIO(void)
              }
              if(!USBHandleBusy(USBGenericInHandle))
 	        {
-		            //The endpoint was not "busy", therefore it is safe to write to the buffer and arm the endpoint.
+		        //The endpoint was not "busy", therefore it is safe to write to the buffer and arm the endpoint.
 	                //The USBGenWrite() function call "arms" the endpoint (and makes the handle indicate the endpoint is busy).
 	                //Once armed, the data will be automatically sent to the host (in hardware by the SIE) the next time the
 	                //host polls the endpoint.  Once the data is successfully sent, the handle (in this case USBGenericInHandle)
