@@ -81,7 +81,20 @@
 /* Interrupt Routines                                                         */
 /******************************************************************************/
 
-/* TODO Add interrupt routine code here. */
+void __ISR(_SPI_3_VECTOR, IPL2SOFT) SPI3Handler(void){
+    
+    INTClearFlag(INT_SPI3RX);
+
+    if(count = 0)
+        x_pix = SPI3BUF;
+    else if(count = 1){
+        y_pix = SPI3BUF;
+        count = 0;
+        Insertion_Sort(CAM_PRI);
+    }
+}
+
+
 void __ISR(_TIMER_1_VECTOR, IPL2SOFT) Timer1Handler(void)
 {
 
@@ -115,12 +128,12 @@ void __ISR(_TIMER_2_VECTOR, IPL2SOFT) Timer2Handler(void)
         //convIntToString(an15Data, charArray);
         //bufferSpaces(charArray);
         //WriteString(charArray);
-        if(tcount >= 11754){
+        if(tcount >= 90000){
             INTEnable(INT_T2, INT_DISABLED);
             //mAD1IntEnable(INT_DISABLED);
             Insertion_Sort(DIS_PRI);
         }
-        if(an15Data >= 550){
+        if(an15Data >= 530){
             INTEnable(INT_T2, INT_DISABLED);
             //mAD1IntEnable(INT_DISABLED);
             Insertion_Sort(DIS_PRI);
@@ -138,12 +151,12 @@ void __ISR(_CHANGE_NOTICE_VECTOR, IPL2SOFT) ChangeNotice_Handler(void)
     // clear the interrupt flag
     mCNClearIntFlag();
 
-    //if (temp == 0xFFFE)
-    //{
+    if (temp == 0xFFFE)
+    {
         // .. things to do .. toggle the button flag
-    buttonFlag = 1;
+    calibration = 1;
     //mPORTAToggleBits(BIT_0);
-    //}
+    }
 }
 
 // ADC10 interrupt handler

@@ -27,6 +27,10 @@ volatile unsigned int checkatd;
 volatile unsigned int tcount;
 volatile unsigned char data[27];
 volatile unsigned int distance;
+volatile unsigned char x_pix;
+volatile unsigned char y_pix;
+volatile unsigned char calibration;
+volatile unsigned char count;
 
 void PutCharacter(const char);
 

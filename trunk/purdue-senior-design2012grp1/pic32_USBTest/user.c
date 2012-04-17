@@ -57,6 +57,12 @@ void InitApp(void)
         for(i =0; i<27; i++){
             data[i] = 0;}
 
+        data[0] = 0x01;
+        data[7] = 0x02;
+        data[14] = 0x03;
+        data[21] = 0x04;
+        data[24] = 0x05;
+
     //PORTSetPinsDigitalOut(IOPORT_A, BIT_0);
     //PORTSetPinsDigitalIn(IOPORT_D, BIT_6);
 	PORTSetPinsDigitalOut(IOPORT_D, BIT_7);
@@ -65,12 +71,15 @@ void InitApp(void)
 	mPORTDClearBits(BIT_7 | BIT_6 | BIT_5);
 
     //mPORTAClearBits(BIT_0);
-    //mCNOpen(CN_ON | CN_IDLE_CON, CN15_ENABLE, CN15_PULLUP_ENABLE);
+    //mCNOpen(CN_ON | CN_IDLE_CON, CN7_ENABLE, CN7_PULLUP_ENABLE);
     //temp = mPORTDRead();
     //ConfigIntCN(CHANGE_INT_ON | CHANGE_INT_PRI_2);
 
     //mPORTAClearBits(BIT_7); 		// Turn off RA7 on startup.
     //mPORTASetPinsDigitalOut(BIT_7);	// Make RA7 as output.
+
+    //SPI initlizatons
+    //SpiChnOpen(3,SPI_OPEN_SLVEN | SPI_OPEN_MODE8 | SPI_OPEN_RBF_HALF_FULL, 8333);
 
     // Explorer-16 uses UART2 to connect to the PC.
     // This initialization assumes 10MHz Fpb clock. If it changes,
