@@ -24,6 +24,7 @@
 //		Function Declarations
 //------------------------------------------------------------------------------
 extern void Camera_Init (AT91S_TWI *pTwi);
+extern void creatematrixred(unsigned char matrix[][96], unsigned char *start);
 
 
 #endif

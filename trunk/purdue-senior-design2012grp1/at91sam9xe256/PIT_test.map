@@ -504,33 +504,33 @@ Image Symbol Table
     PIO_SetOutput                            0x0020070c   ARM Code      80  pio.o(.text)
     .text                                    0x00200914   Section        0  tcm8230.o(.text)
     .text                                    0x002009a8   Section        0  main.o(.text)
-    .text                                    0x00200bb0   Section       32  sam9xe.o(.text)
-    .text                                    0x00200bd0   Section      380  aeabi_sdiv.o(.text)
-    __arm_div8                               0x00200bfc   ARM Code       0  aeabi_sdiv.o(.text)
-    __arm_div5                               0x00200c20   ARM Code       0  aeabi_sdiv.o(.text)
-    __arm_div2                               0x00200c44   ARM Code       0  aeabi_sdiv.o(.text)
-    __arm_div_large                          0x00200c80   ARM Code       0  aeabi_sdiv.o(.text)
-    .text                                    0x00200d4c   Section        0  heapauxi.o(.text)
-    .text                                    0x00200d54   Section        4  use_no_semi.o(.text)
-    .text                                    0x00200d58   Section       96  sys_stackheap_outer.o(.text)
-    .text                                    0x00200d58   Section        0  indicate_semi.o(.text)
-    .text                                    0x00200db8   Section        0  exit.o(.text)
-    .text                                    0x00200dc4   Section        0  sys_exit.o(.text)
-    .text                                    0x00200dd0   Section       12  libspace.o(.text)
-    .text                                    0x00200ddc   Section       12  rt_fp_status_addr_intlibspace.o(.text)
-    .text_udiv                               0x00200de8   Section       36  aeabi_sdiv.o(.text_udiv)
-    x$fpl$fpinit                             0x00200e0c   Section       20  fpinit.o(x$fpl$fpinit)
-    .constdata                               0x00200e20   Section      120  main.o(.constdata)
-    pins                                     0x00200e20   Data         120  main.o(.constdata)
+    .text                                    0x00200cd0   Section       32  sam9xe.o(.text)
+    .text                                    0x00200cf0   Section      380  aeabi_sdiv.o(.text)
+    __arm_div8                               0x00200d1c   ARM Code       0  aeabi_sdiv.o(.text)
+    __arm_div5                               0x00200d40   ARM Code       0  aeabi_sdiv.o(.text)
+    __arm_div2                               0x00200d64   ARM Code       0  aeabi_sdiv.o(.text)
+    __arm_div_large                          0x00200da0   ARM Code       0  aeabi_sdiv.o(.text)
+    .text                                    0x00200e6c   Section        0  heapauxi.o(.text)
+    .text                                    0x00200e74   Section        4  use_no_semi.o(.text)
+    .text                                    0x00200e78   Section       96  sys_stackheap_outer.o(.text)
+    .text                                    0x00200e78   Section        0  indicate_semi.o(.text)
+    .text                                    0x00200ed8   Section        0  exit.o(.text)
+    .text                                    0x00200ee4   Section        0  sys_exit.o(.text)
+    .text                                    0x00200ef0   Section       12  libspace.o(.text)
+    .text                                    0x00200efc   Section       12  rt_fp_status_addr_intlibspace.o(.text)
+    .text_udiv                               0x00200f08   Section       36  aeabi_sdiv.o(.text_udiv)
+    x$fpl$fpinit                             0x00200f2c   Section       20  fpinit.o(x$fpl$fpinit)
+    .constdata                               0x00200f40   Section      120  main.o(.constdata)
+    pins                                     0x00200f40   Data         120  main.o(.constdata)
     .data                                    0x00300000   Section        4  main.o(.data)
     frame_ready_flag                         0x00300000   Data           4  main.o(.data)
-    .bss                                     0x00300004   Section       16  main.o(.bss)
-    .bss                                     0x00300014   Section       96  libspace.o(.bss)
-    HEAP                                     0x00300078   Section        0  sam9xe.o(HEAP)
-    STACK                                    0x00300078   Section     1160  sam9xe.o(STACK)
-    Heap_Mem                                 0x00300078   Data           0  sam9xe.o(HEAP)
-    Stack_Mem                                0x00300078   Data        1024  sam9xe.o(STACK)
-    Stack_Top                                0x00300500   Data           0  sam9xe.o(STACK)
+    .bss                                     0x00300004   Section     6160  main.o(.bss)
+    .bss                                     0x00301814   Section       96  libspace.o(.bss)
+    HEAP                                     0x00301878   Section        0  sam9xe.o(HEAP)
+    STACK                                    0x00301878   Section     1160  sam9xe.o(STACK)
+    Heap_Mem                                 0x00301878   Data           0  sam9xe.o(HEAP)
+    Stack_Mem                                0x00301878   Data        1024  sam9xe.o(STACK)
+    Stack_Top                                0x00301d00   Data           0  sam9xe.o(STACK)
 
     Global Symbols
 
@@ -637,32 +637,33 @@ Image Symbol Table
     PIO_GetISR                               0x00200904   ARM Code      16  pio.o(.text)
     Camera_Init                              0x00200914   ARM Code     140  tcm8230.o(.text)
     ISI_Handler                              0x002009a8   ARM Code      96  main.o(.text)
-    main                                     0x00200a08   ARM Code     392  main.o(.text)
-    __user_initial_stackheap                 0x00200bb0   ARM Code       0  sam9xe.o(.text)
-    __aeabi_idiv                             0x00200bd0   ARM Code       0  aeabi_sdiv.o(.text)
-    __aeabi_idivmod                          0x00200bd0   ARM Code     380  aeabi_sdiv.o(.text)
-    __use_two_region_memory                  0x00200d4d   Thumb Code     2  heapauxi.o(.text)
-    __rt_heap_escrow                         0x00200d4f   Thumb Code     2  heapauxi.o(.text)
-    __rt_heap_expand                         0x00200d51   Thumb Code     2  heapauxi.o(.text)
-    __I$use$semihosting                      0x00200d54   ARM Code       0  use_no_semi.o(.text)
-    __use_no_semihosting_swi                 0x00200d54   ARM Code       4  use_no_semi.o(.text)
-    __semihosting_library_function           0x00200d58   ARM Code       0  indicate_semi.o(.text)
-    __user_setup_stackheap                   0x00200d58   ARM Code      96  sys_stackheap_outer.o(.text)
-    exit                                     0x00200db9   Thumb Code    12  exit.o(.text)
-    _sys_exit                                0x00200dc5   Thumb Code     8  sys_exit.o(.text)
-    __user_libspace                          0x00200dd0   ARM Code      12  libspace.o(.text)
-    __user_perproc_libspace                  0x00200dd0   ARM Code       0  libspace.o(.text)
-    __user_perthread_libspace                0x00200dd0   ARM Code       0  libspace.o(.text)
-    __rt_fp_status_addr                      0x00200ddc   ARM Code      12  rt_fp_status_addr_intlibspace.o(.text)
-    __aeabi_uidiv                            0x00200de8   ARM Code       0  aeabi_sdiv.o(.text_udiv)
-    __aeabi_uidivmod                         0x00200de8   ARM Code      36  aeabi_sdiv.o(.text_udiv)
-    _fp_init                                 0x00200e0c   ARM Code      20  fpinit.o(x$fpl$fpinit)
-    __fplib_config_pureend_doubles           0x00200e1c   ARM Code       0  fpinit.o(x$fpl$fpinit)
-    Region$$Table$$Base                      0x00200e98   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x00200eb8   Number         0  anon$$obj.o(Region$$Table)
+    main                                     0x00200a08   ARM Code     676  main.o(.text)
+    __user_initial_stackheap                 0x00200cd0   ARM Code       0  sam9xe.o(.text)
+    __aeabi_idiv                             0x00200cf0   ARM Code       0  aeabi_sdiv.o(.text)
+    __aeabi_idivmod                          0x00200cf0   ARM Code     380  aeabi_sdiv.o(.text)
+    __use_two_region_memory                  0x00200e6d   Thumb Code     2  heapauxi.o(.text)
+    __rt_heap_escrow                         0x00200e6f   Thumb Code     2  heapauxi.o(.text)
+    __rt_heap_expand                         0x00200e71   Thumb Code     2  heapauxi.o(.text)
+    __I$use$semihosting                      0x00200e74   ARM Code       0  use_no_semi.o(.text)
+    __use_no_semihosting_swi                 0x00200e74   ARM Code       4  use_no_semi.o(.text)
+    __semihosting_library_function           0x00200e78   ARM Code       0  indicate_semi.o(.text)
+    __user_setup_stackheap                   0x00200e78   ARM Code      96  sys_stackheap_outer.o(.text)
+    exit                                     0x00200ed9   Thumb Code    12  exit.o(.text)
+    _sys_exit                                0x00200ee5   Thumb Code     8  sys_exit.o(.text)
+    __user_libspace                          0x00200ef0   ARM Code      12  libspace.o(.text)
+    __user_perproc_libspace                  0x00200ef0   ARM Code       0  libspace.o(.text)
+    __user_perthread_libspace                0x00200ef0   ARM Code       0  libspace.o(.text)
+    __rt_fp_status_addr                      0x00200efc   ARM Code      12  rt_fp_status_addr_intlibspace.o(.text)
+    __aeabi_uidiv                            0x00200f08   ARM Code       0  aeabi_sdiv.o(.text_udiv)
+    __aeabi_uidivmod                         0x00200f08   ARM Code      36  aeabi_sdiv.o(.text_udiv)
+    _fp_init                                 0x00200f2c   ARM Code      20  fpinit.o(x$fpl$fpinit)
+    __fplib_config_pureend_doubles           0x00200f3c   ARM Code       0  fpinit.o(x$fpl$fpinit)
+    Region$$Table$$Base                      0x00200fb8   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x00200fd8   Number         0  anon$$obj.o(Region$$Table)
     FbList                                   0x00300004   Data          16  main.o(.bss)
-    __libspace_start                         0x00300014   Data          96  libspace.o(.bss)
-    __temporary_stack_top$libspace           0x00300074   Data           0  libspace.o(.bss)
+    Matrix                                   0x00300014   Data        6144  main.o(.bss)
+    __libspace_start                         0x00301814   Data          96  libspace.o(.bss)
+    __temporary_stack_top$libspace           0x00301874   Data           0  libspace.o(.bss)
 
 
 
@@ -672,9 +673,9 @@ Memory Map of the image
 
   Image Entry point : 0x002002cc
 
-  Load Region LR_IROM1 (Base: 0x00200000, Size: 0x00000ebc, Max: 0x00040000, ABSOLUTE)
+  Load Region LR_IROM1 (Base: 0x00200000, Size: 0x00000fdc, Max: 0x00040000, ABSOLUTE)
 
-    Execution Region ER_IROM1 (Base: 0x00200000, Size: 0x00000eb8, Max: 0x00040000, ABSOLUTE)
+    Execution Region ER_IROM1 (Base: 0x00200000, Size: 0x00000fd8, Max: 0x00040000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -726,34 +727,34 @@ Memory Map of the image
     0x00200634   0x00000058   Code   RO           95    .text               math.o
     0x0020068c   0x00000288   Code   RO          117    .text               pio.o
     0x00200914   0x00000094   Code   RO          129    .text               tcm8230.o
-    0x002009a8   0x00000208   Code   RO          153    .text               main.o
-    0x00200bb0   0x00000020   Code   RO          194    .text               sam9xe.o
-    0x00200bd0   0x0000017c   Code   RO          210    .text               c_5.l(aeabi_sdiv.o)
-    0x00200d4c   0x00000006   Code   RO          226    .text               c_5.l(heapauxi.o)
-    0x00200d52   0x00000002   PAD
-    0x00200d54   0x00000004   Code   RO          392    .text               c_5.l(use_no_semi.o)
-    0x00200d58   0x00000000   Code   RO          394    .text               c_5.l(indicate_semi.o)
-    0x00200d58   0x00000060   Code   RO          395    .text               c_5.l(sys_stackheap_outer.o)
-    0x00200db8   0x0000000c   Code   RO          430    .text               c_5.l(exit.o)
-    0x00200dc4   0x0000000c   Code   RO          450    .text               c_5.l(sys_exit.o)
-    0x00200dd0   0x0000000c   Code   RO          452    .text               c_5.l(libspace.o)
-    0x00200ddc   0x0000000c   Code   RO          504    .text               c_5.l(rt_fp_status_addr_intlibspace.o)
-    0x00200de8   0x00000024   Code   RO          211    .text_udiv          c_5.l(aeabi_sdiv.o)
-    0x00200e0c   0x00000014   Code   RO          488    x$fpl$fpinit        fz_5s.l(fpinit.o)
-    0x00200e20   0x00000078   Data   RO          155    .constdata          main.o
-    0x00200e98   0x00000020   Data   RO          538    Region$$Table       anon$$obj.o
+    0x002009a8   0x00000328   Code   RO          153    .text               main.o
+    0x00200cd0   0x00000020   Code   RO          194    .text               sam9xe.o
+    0x00200cf0   0x0000017c   Code   RO          210    .text               c_5.l(aeabi_sdiv.o)
+    0x00200e6c   0x00000006   Code   RO          226    .text               c_5.l(heapauxi.o)
+    0x00200e72   0x00000002   PAD
+    0x00200e74   0x00000004   Code   RO          392    .text               c_5.l(use_no_semi.o)
+    0x00200e78   0x00000000   Code   RO          394    .text               c_5.l(indicate_semi.o)
+    0x00200e78   0x00000060   Code   RO          395    .text               c_5.l(sys_stackheap_outer.o)
+    0x00200ed8   0x0000000c   Code   RO          430    .text               c_5.l(exit.o)
+    0x00200ee4   0x0000000c   Code   RO          450    .text               c_5.l(sys_exit.o)
+    0x00200ef0   0x0000000c   Code   RO          452    .text               c_5.l(libspace.o)
+    0x00200efc   0x0000000c   Code   RO          504    .text               c_5.l(rt_fp_status_addr_intlibspace.o)
+    0x00200f08   0x00000024   Code   RO          211    .text_udiv          c_5.l(aeabi_sdiv.o)
+    0x00200f2c   0x00000014   Code   RO          488    x$fpl$fpinit        fz_5s.l(fpinit.o)
+    0x00200f40   0x00000078   Data   RO          155    .constdata          main.o
+    0x00200fb8   0x00000020   Data   RO          538    Region$$Table       anon$$obj.o
 
 
-    Execution Region RW_IRAM1 (Base: 0x00300000, Size: 0x00000500, Max: 0x00008000, ABSOLUTE)
+    Execution Region RW_IRAM1 (Base: 0x00300000, Size: 0x00001d00, Max: 0x00008000, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
     0x00300000   0x00000004   Data   RW          156    .data               main.o
-    0x00300004   0x00000010   Zero   RW          154    .bss                main.o
-    0x00300014   0x00000060   Zero   RW          453    .bss                c_5.l(libspace.o)
-    0x00300074   0x00000004   PAD
-    0x00300078   0x00000000   Zero   RW          192    HEAP                sam9xe.o
-    0x00300078   0x00000488   Zero   RW          191    STACK               sam9xe.o
+    0x00300004   0x00001810   Zero   RW          154    .bss                main.o
+    0x00301814   0x00000060   Zero   RW          453    .bss                c_5.l(libspace.o)
+    0x00301874   0x00000004   PAD
+    0x00301878   0x00000000   Zero   RW          192    HEAP                sam9xe.o
+    0x00301878   0x00000488   Zero   RW          191    STACK               sam9xe.o
 
 
 ==============================================================================
@@ -764,7 +765,7 @@ Image component sizes
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   Object Name
 
         88          0          0          0          0        833   aic.o
-       520         32        120          4         16     108044   main.o
+       808         36        120          4       6160     108179   main.o
         88          0          0          0          0       1561   math.o
        648          0          0          0          0       2869   pio.o
          0          0          0          0          0     107044   pit.o
@@ -773,7 +774,7 @@ Image component sizes
        552          4          0          0          0       3724   twi.o
 
     ----------------------------------------------------------------------
-      2792        156        152          4       1176     225485   Object Totals
+      3080        160        152          4       7320     225620   Object Totals
          0          0         32          0          0          0   (incl. Generated)
          0          0          0          0          0          0   (incl. Padding)
 
@@ -826,15 +827,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-      3616        180        152          4       1276     225345   Grand Totals
-      3616        180        152          4       1276     225345   ELF Image Totals
-      3616        180        152          4          0          0   ROM Totals
+      3904        184        152          4       7420     225480   Grand Totals
+      3904        184        152          4       7420     225480   ELF Image Totals
+      3904        184        152          4          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                 3768 (   3.68kB)
-    Total RW  Size (RW Data + ZI Data)              1280 (   1.25kB)
-    Total ROM Size (Code + RO Data + RW Data)       3772 (   3.68kB)
+    Total RO  Size (Code + RO Data)                 4056 (   3.96kB)
+    Total RW  Size (RW Data + ZI Data)              7424 (   7.25kB)
+    Total ROM Size (Code + RO Data + RW Data)       4060 (   3.96kB)
 
 ==============================================================================
 
