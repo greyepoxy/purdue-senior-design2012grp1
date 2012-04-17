@@ -44,7 +44,7 @@ in the configuration macro.*/
 #pragma config FPLLMUL  = MUL_20        // PLL Multiplier
 #pragma config FPLLIDIV = DIV_2         // PLL Input Divider
 #pragma config FPLLODIV = DIV_1         // PLL Output Divider
-#pragma config FPBDIV   = DIV_2         // Peripheral Clock divisor
+#pragma config FPBDIV   = DIV_1         // Peripheral Clock divisor
 #pragma config FWDTEN   = OFF           // Watchdog Timer
 #pragma config FNOSC    = PRIPLL        // Oscillator Selection
 #pragma config POSCMOD  = HS            // Primary Oscillator

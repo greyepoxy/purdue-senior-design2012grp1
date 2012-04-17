@@ -7,6 +7,15 @@
 #include <stdint.h>          /* For uint32_t definition                       */
 #include <stdbool.h>         /* For true/false definition                     */
 #include "interrupts.h"
+#include "user.h"
+
+#define T2_TICK             40 //gives an interrupt every 1us
+#define ACCEL_PRI           0x01
+#define GYRO_PRI            0x02
+#define MAG_PRI             0x03
+#define DIS_PRI             0x04
+#define CAM_PRI             0x05
+
 
 /******************************************************************************/
 /* Interrupt Vector Options                                                   */
@@ -75,14 +84,193 @@
 /* TODO Add interrupt routine code here. */
 void __ISR(_TIMER_1_VECTOR, IPL2SOFT) Timer1Handler(void)
 {
+
     // clear the interrupt flag
     mT1ClearIntFlag();
-	//Toggle the LED
-	mPORTDToggleBits(BIT_7);
+    // Set the timer1 flag
+    timer1Flag = 1;
+
+    /* USB TEST STUFF
+    // clear the interrupt flag
+    mT1ClearIntFlag();
+	//Toggle the LED	mPORTDToggleBits(BIT_7);
+
 
 	//Toggle LED on Flag
 	if (LEDOnFlag == 0)
 		LEDOnFlag = 1;
 	else
-		LEDOnFlag = 0;
+		LEDOnFlag = 0;*/
+}
+
+void __ISR(_TIMER_2_VECTOR, IPL2SOFT) Timer2Handler(void)
+{
+ char charArray[6];
+    // clear the interrupt flag
+    mT2ClearIntFlag();
+    // increment tcount
+    tcount++;
+    	int offset = 8 * ((~ReadActiveBufferADC10() & 0x01));
+	an15Data = ReadADC10(offset);
+        //convIntToString(an15Data, charArray);
+        //bufferSpaces(charArray);
+        //WriteString(charArray);
+        if(tcount >= 11754){
+            INTEnable(INT_T2, INT_DISABLED);
+            //mAD1IntEnable(INT_DISABLED);
+            Insertion_Sort(DIS_PRI);
+        }
+        if(an15Data >= 550){
+            INTEnable(INT_T2, INT_DISABLED);
+            //mAD1IntEnable(INT_DISABLED);
+            Insertion_Sort(DIS_PRI);
+        }
+
+}
+
+void __ISR(_CHANGE_NOTICE_VECTOR, IPL2SOFT) ChangeNotice_Handler(void)
+{
+    unsigned int temp;
+
+    // clear the mismatch condition
+    temp = mPORTDRead();
+
+    // clear the interrupt flag
+    mCNClearIntFlag();
+
+    //if (temp == 0xFFFE)
+    //{
+        // .. things to do .. toggle the button flag
+    buttonFlag = 1;
+    //mPORTAToggleBits(BIT_0);
+    //}
+}
+
+// ADC10 interrupt handler
+
+void __ISR(_ADC_VECTOR, IPL2SOFT) IntAdc10Handler(void)
+{
+   
+        mAD1ClearIntFlag();
+	// determine which buffer is idle and create an offset
+	int offset = 8 * ((~ReadActiveBufferADC10() & 0x01));
+	an15Data = ReadADC10(offset);
+
+        if(tcount >= 11754){
+            ConfigIntTimer2(T2_INT_OFF | T1_INT_PRIOR_2);
+            //mAD1IntEnable(INT_DISABLED);
+            Insertion_Sort(DIS_PRI);
+        }
+        if(an15Data >= 600){
+            ConfigIntTimer2(T2_INT_OFF | T1_INT_PRIOR_2);
+            //mAD1IntEnable(INT_DISABLED);
+            Insertion_Sort(DIS_PRI);
+        }
+}
+
+// UART 2 interrupt handler
+// it is set at priority level 2 with software context saving
+void __ISR(_UART2_VECTOR, IPL2SOFT) IntUart2Handler(void)
+{
+    // Is this an RX interrupt?
+    if (INTGetFlag(INT_SOURCE_UART_RX(UART2)))
+    {
+        char temp = UARTGetDataByte(UART2);
+        // Echo what we just received.
+        PutCharacter(temp);
+
+        // Clear the RX interrupt Flag
+        INTClearFlag(INT_SOURCE_UART_RX(UART2));
+
+        // Toggle LED to indicate UART activity
+        //mPORTAToggleBits(BIT_7);
+    }
+
+    // Transmit complete send next byte in buffer
+    if (INTGetFlag(INT_SOURCE_UART_TX(UART2)))
+    {
+        //Clear the TX interrupt Flag
+        INTClearFlag(INT_SOURCE_UART_TX(UART2));
+
+        //if buffer empty exit
+        if (TBufferHead == TBufferTail) {
+			INTEnable(INT_SOURCE_UART_TX(UART2), INT_DISABLED);
+            return;
+		}
+        //else transmit next character
+        else
+        {
+            PutCharacter(rs232TBuffer[TBufferHead]);
+            TBufferHead = (TBufferHead + 1)% TBufferSize;
+        }
+
+    }
+}
+void __ISR(_UART_3_VECTOR, IPL2SOFT) IntUart3Handler(void)
+{
+    // Is this an RX interrupt?
+    if (INTGetFlag(INT_SOURCE_UART_RX(UART3)))
+    {
+        int temp = UARTGetDataByte(UART3);
+        // Echo what we just received.
+        //PutCharacter(temp);
+        int test = temp;
+        if(test == 0x35){
+                //Configure the T2 timer which counts the number of us till the ultrasonics appears on the ATD to 1 us
+                //OpenTimer2(T2_ON | T2_PS_1_4, 1); //one second interrupts
+                INTEnable(INT_T2, INT_ENABLED);
+                //mAD1IntEnable(INT_ENABLED);
+        }
+
+        // Clear the RX interrupt Flag
+        INTClearFlag(INT_SOURCE_UART_RX(UART3));
+
+        // Toggle LED to indicate UART activity
+        //mPORTAToggleBits(BIT_7);
+    }
+
+}
+void __ISR(_EXTERNAL_1_VECTOR, IPL2SOFT) ExtINT1Handler(void)
+{
+    // clear the interrupt flag
+    INTClearFlag(INT_VECTOR_EX_INT(INT_INT1));
+	// disables the interrupt for now
+	DisableINT1;
+
+    // set the read sensor flag
+    Insertion_Sort(ACCEL_PRI);
+    readAccelFlag = 1;
+}
+
+void __ISR(_EXTERNAL_0_VECTOR, IPL2SOFT) ExtINT0Handler(void)
+{
+    // clear the interrupt flag
+    INTClearFlag(INT_VECTOR_EX_INT(INT_INT0));
+	// disables the interrupt for now
+	DisableINT0;
+
+    // set the read sensor flag
+    readMagFlag = 1;
+    Insertion_Sort(MAG_PRI);
+}
+
+void __ISR(_EXTERNAL_4_VECTOR, IPL2SOFT) ExtINT4Handler(void)
+{
+    // clear the interrupt flag
+    INTClearFlag(INT_VECTOR_EX_INT(INT_INT4));
+	// disables the interrupt for now
+	DisableINT4;
+
+    // set the read sensor flag
+    readGyroFlag = 1;
+    Insertion_Sort(GYRO_PRI);
+}
+
+void PutCharacter(const char character)
+{
+  while (!UARTTransmitterIsReady(UART2));
+
+  UARTSendDataByte(UART2, character);
+
+  //while (!UARTTransmissionHasCompleted(UART2));
 }

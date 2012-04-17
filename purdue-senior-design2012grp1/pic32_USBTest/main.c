@@ -30,6 +30,52 @@ unsigned char INPacket[64];
 USB_HANDLE USBGenericOutHandle;
 USB_HANDLE USBGenericInHandle;
 
+/* i.e. uint32_t <variable_name>; */
+#define	GetSystemClock()              (80000000ul)
+#define	GetPeripheralClock()          (GetSystemClock()/(1 << OSCCONbits.PBDIV))
+#define DESIRED_BAUDRATE    (9600)      //The desired BaudRate
+// I2C Constants
+#define I2C_CLOCK_FREQ      100000
+#define I2C_BUS             I2C1
+#define ACCEL_ADDRESS       0x1D    // 0b011101 MMA8452 address
+/* Set the scale below either 2, 4 or 8*/
+#define ACCEL_SCALE			2 // Sets full-scale range to +/-2, 4, or 8g. Used to calc real g values.
+/* Set the output data rate below. Value should be between 0 and 7*/
+#define ACCEL_DATARATE		0 // 0=800Hz, 1=400, 2=200, 3=100, 4=50, 5=12.5, 6=6.25, 7=1.56
+#define MAG_ADDRESS			0x0E	// address of MAG3110
+#define GYRO_ADDRESS		0x69	// address of ITG-3200 0xb1101001
+#define CHAR_ARRAY_LENGTH	6
+#define ACCEL_PRI           0x01
+#define GYRO_PRI            0x02
+#define MAG_PRI             0x03
+#define DIS_PRI             0x04
+#define CAM_PRI             0x05
+int accel_x;
+int accel_y;
+int accel_z;
+INT16 mag_x, mag_y, mag_z;
+INT16 gyro_x, gyro_y, gyro_z;
+volatile char rs232TBuffer[TBufferSize];
+USB_HANDLE USBGenericInHandle;
+
+void WriteString(const char *);
+void WriteChar(const char);
+//void WriteFloat(float f, unsigned int, unsigned int);
+unsigned int convIntToString(int, char *);
+unsigned int convFloatToString(float, unsigned int, char *);
+void bufferSpaces(char *);
+BOOL I2CStartTransfer(BOOL);
+void StopTransfer( void );
+BOOL TransmitOneByte( UINT8 );
+BOOL I2CSingleByteWrite(UINT8, UINT8, UINT8);
+BOOL I2CMultByteWrite(UINT8, UINT8, UINT, UINT8*);
+BOOL I2CSingleByteRead(UINT8, UINT8, UINT8*);
+BOOL I2CMultByteRead(UINT8, UINT8, UINT, UINT8*);
+BOOL initMMA8452(UINT8, UINT8);
+BOOL initMAG3110(void);
+BOOL initITG3200(void);
+BOOL neg;
+
 /** PRIVATE PROTOTYPES *********************************************/
 static void InitializeSystem(void);
 void ProcessIO(void);
@@ -40,7 +86,35 @@ void ProcessIO(void);
 
 int32_t main(void)
 {
-	InitializeSystem();
+    front = 0;
+    rear = 0;
+    char charArray[CHAR_ARRAY_LENGTH];
+    char c_flag = 0;
+    unsigned int temp;
+
+    // Set interrupt flags
+    buttonFlag = 0;
+    timer1Flag = 0;
+    readAccelFlag = 0;
+    readGyroFlag = 0;
+    readMagFlag = 0;
+    rs232TBuffer[32];
+    TBufferHead = 0;
+    TBufferTail = 0;
+    accel_x = 0;
+    accel_y = 0;
+    accel_z = 0;
+    mag_x = 0;
+    mag_y = 0;
+    mag_z = 0;
+    gyro_x = 0;
+    gyro_y = 0;
+    gyro_z = 0;
+    checkatd = 0;
+    tcount = 0;
+    distance = 0;
+
+    InitializeSystem();
 
     #if defined(USB_INTERRUPT)
         USBDeviceAttach();
@@ -50,8 +124,169 @@ int32_t main(void)
     {
 		// Application-specific tasks.
 		// Application related code may be added here, or in the ProcessIO() function.
+        if(front != rear){
+            c_flag = queue[front];
+            queue[front] = 0;
+            front = (front + 1) % 5;
+        }
         ProcessIO();
-    }//end while
+        if (timer1Flag == 1) {
+                        //Accelerometer Data
+			/*WriteString("\rAccel-> x: ");
+			convIntToString(accel_x, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			WriteString(" y: ");
+			convIntToString(accel_y, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			WriteString(" z: ");
+			convIntToString(accel_z, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			//Magnetometer Data
+			WriteString(" Mag-> x: ");
+			convIntToString(mag_x, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			WriteString(" y: ");
+			convIntToString(mag_y, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			WriteString(" z: ");
+			convIntToString(mag_z, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			timer1Flag = 0;
+			//Gyroscope Data
+			WriteString(" Gyro-> x: ");
+			convIntToString(gyro_x, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			WriteString(" y: ");
+			convIntToString(gyro_y, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			WriteString(" z: ");
+			convIntToString(gyro_z, charArray);
+			bufferSpaces(charArray);
+			WriteString(charArray);
+			mPORTDToggleBits(BIT_7);
+			convIntToString(an15Data, charArray);
+			bufferSpaces(charArray);
+			WriteString("\r\n");
+			WriteString(charArray);*/
+			timer1Flag = 0;
+	}
+	if (c_flag == ACCEL_PRI) {
+			//Do i2c operations here to read accelerometer
+			UINT8 rawData[6]; // x/y/z accel register data stored here
+			// Read the six raw data registers into data array
+			I2CMultByteRead(ACCEL_ADDRESS, 0x01, 6, &rawData[0]);
+
+			int tData, i;
+			/* loop to calculate 12-bit ADC and g value for each axis */
+			for (i=0; i<6; i+=2)
+			{
+				// Turn the MSB and LSB into a 12-bit value
+				tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
+				// If the number is negative, we have to make it so manually (no 12-bit data type)
+				if (rawData[i] > 0x7F)
+					tData -= 4096;
+				if (i == 0)
+					accel_x = tData;
+				else if (i == 2)
+					accel_y = tData;
+				else
+					accel_z = tData;
+			}
+                        data[0] = 0x11;
+                        data[1] = (char)(accel_x >> 8);
+                        data[2] = (char)accel_x;
+                        data[3] = (char)(accel_y >> 8);
+                        data[4] = (char)accel_y;
+                        data[5] = (char)(accel_z >> 8);
+                        data[6] = (char)accel_z;
+			EnableINT1;
+	}
+	if (c_flag == MAG_PRI) {
+			//Do i2c operations here to read magnetometer
+			UINT8 rawData[6];
+			I2CMultByteRead(MAG_ADDRESS, 0x01, 6, &rawData[0]);
+
+			INT16 tData;
+			int i;
+			/* loop to calculate 16-bit ADC values for each axis */
+			for (i=0; i<6; i+=2)
+			{
+				// Turn the MSB and LSB into a 16-bit value
+				tData = ((rawData[i] << 8) | rawData[i+1]);
+				if (i == 0)
+					mag_x = tData;
+				else if (i == 2)
+					mag_y = tData;
+				else
+					mag_z = tData;
+			}
+                        data[14] = 0x12;
+                        data[15] = (char)(mag_x >>8);
+                        data[16] = (char)mag_x;
+                        data[17] = (char)(mag_y >> 8);
+                        data[18] = (char)mag_y;
+                        data[19] = (char)(mag_z >> 8);
+                        data[20] = (char)mag_z;
+			
+			EnableINT0;
+	}
+	if (c_flag == GYRO_PRI) {
+			//Do i2c operations here to read gyroscope
+			UINT8 rawData[6]; // x/y/z velocity register data stored here
+			// Read the six raw data registers into data array
+			I2CMultByteRead(GYRO_ADDRESS, 0x1D, 6, &rawData[0]);
+
+			INT16 tData;
+			int i;
+			/* loop to calculate 16-bit ADC values for each axis */
+			for (i=0; i<6; i+=2)
+			{
+				// Turn the MSB and LSB into a 16-bit value
+				tData = ((rawData[i] << 8) | rawData[i+1]);
+				if (i == 0)
+					gyro_x = tData;
+				else if (i == 2)
+					gyro_y = tData;
+				else
+					gyro_z = tData;
+			}
+
+                        data[7] = 0x13;
+                        data[8] = (char)(gyro_x >> 8);
+                        data[9] = (char)gyro_x;
+                        data[10] = (char)(gyro_y >> 8);
+                        data[11] = (char)gyro_y;
+                        data[12] = (char)(gyro_z >> 8);
+                        data[13] = (char)gyro_z;
+			
+			EnableINT4;
+	}
+        if(c_flag == DIS_PRI){
+            distance = ((340290 * tcount)/1000000) - 140;
+            convIntToString(distance, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            tcount = 0;
+            data[21] = 0x14;
+            data[22] = (char)(distance >> 8);
+            data[23] = (char) distance;
+
+        }
+
+        if(c_flag == CAM_PRI){
+            data[24] = 0x15;
+            data[25] = 0x00;
+            data[26] = 0x00;
+        }
+   }//end while
 }
 
 static void InitializeSystem(void)
@@ -72,12 +307,13 @@ static void InitializeSystem(void)
     InitApp();
 
 	// LED port
-	PORTSetPinsDigitalOut(IOPORT_D, BIT_7);
+	//PORTSetPinsDigitalOut(IOPORT_D, BIT_7);
 	// Board Control Bits
-	PORTSetPinsDigitalOut(IOPORT_D, BIT_5);
-	PORTSetPinsDigitalOut(IOPORT_D, BIT_6);
-	mPORTDClearBits(BIT_7 | BIT_6 | BIT_5);
+	//PORTSetPinsDigitalOut(IOPORT_D, BIT_5);
+	//PORTSetPinsDigitalOut(IOPORT_D, BIT_6);
+	//mPORTDClearBits(BIT_7 | BIT_6 | BIT_5);
 	LEDOnFlag = 0;
+
 
 	//Enable Camera Peripheral and Linear regulators
 	//mPORTDSetBits(BIT_6 | BIT_5);
@@ -134,11 +370,40 @@ static void InitializeSystem(void)
 
 void ProcessIO(void)
 {
+    int i;
+
     //User Application USB tasks below.
     //Note: The user application should not begin attempting to read/write over the USB
     //until after the device has been fully enumerated.  After the device is fully
     //enumerated, the USBDeviceState will be set to "CONFIGURED_STATE".
     if((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)) return;
+
+
+    if(!USBHandleBusy(USBGenericOutHandle))		//Check if the endpoint has received any data from the host.
+    {
+        switch(OUTPacket[0])
+        {
+            case 0x80:
+             for(i=0;i < 27; i++){
+                    INPacket[i] = data[i];
+             }
+             if(!USBHandleBusy(USBGenericInHandle))
+	        {
+		            //The endpoint was not "busy", therefore it is safe to write to the buffer and arm the endpoint.
+	                //The USBGenWrite() function call "arms" the endpoint (and makes the handle indicate the endpoint is busy).
+	                //Once armed, the data will be automatically sent to the host (in hardware by the SIE) the next time the
+	                //host polls the endpoint.  Once the data is successfully sent, the handle (in this case USBGenericInHandle)
+	                //will indicate the the endpoint is no longer busy.
+					USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM,(BYTE*)&INPacket,USBGEN_EP_SIZE);
+                }
+             data[0] = 0x01;
+             data[7] = 0x02;
+             data[14] = 0x03;
+             data[21] = 0x04;
+             data[24] = 0x05;
+             break;
+        }
+    }
 
     //As the device completes the enumeration process, the USBCBInitEP() function will
     //get called.  In this function, we initialize the user application endpoints (in this
@@ -155,48 +420,48 @@ void ProcessIO(void)
     //from the endpoint buffer, and processing the data.  In this example, we have implemented a few very
     //simple commands.  For example, if the host sends a packet of data to the endpoint 1 OUT buffer, with the
     //first byte = 0x80, this is being used as a command to indicate that the firmware should "Toggle LED(s)".
-    if(!USBHandleBusy(USBGenericOutHandle))		//Check if the endpoint has received any data from the host.
-    {
-        switch(OUTPacket[0])					//Data arrived, check what kind of command might be in the packet of data.
-        {
-            case 0x80:  //Toggle LED(s) command from PC application, stop/start blinking LED.
-				if (INTGetEnable(INT_T1))
-					INTEnable(INT_T1, INT_DISABLED);
-				else
-					INTEnable(INT_T1, INT_ENABLED);
-
-                break;
-            case 0x81:  //Get push LED state command from PC application.
-                INPacket[0] = 0x81;				//Echo back to the host PC the command we are fulfilling in the first byte.  In this case, the Get Pushbutton State command.
-				if(LEDOnFlag == 1)	//LED on
-				{
-					INPacket[1] = 0x01;
-				}
-				else							//LED off
-				{
-					INPacket[1] = 0x00;
-				}
+    //if(!USBHandleBusy(USBGenericOutHandle))		//Check if the endpoint has received any data from the host.
+    //{
+    //    switch(OUTPacket[0])					//Data arrived, check what kind of command might be in the packet of data.
+    //    {
+    //        case 0x80:  //Toggle LED(s) command from PC application, stop/start blinking LED.
+	//			if (INTGetEnable(INT_T1))
+	//				INTEnable(INT_T1, INT_DISABLED);
+	//			else
+	//				INTEnable(INT_T1, INT_ENABLED);
+//
+  //              break;
+    //        case 0x81:  //Get push LED state command from PC application.
+      //          INPacket[0] = 0x81;				//Echo back to the host PC the command we are fulfilling in the first byte.  In this case, the Get Pushbutton State command.
+	//			if(LEDOnFlag == 1)	//LED on
+	//			{
+	//				INPacket[1] = 0x01;
+	//			}
+	//			else							//LED off
+	//			{
+	//				INPacket[1] = 0x00;
+	//			}
 				//Now check to make sure no previous attempts to send data to the host are still pending.  If any attemps are still
 				//pending, we do not want to write to the endpoint 1 IN buffer again, until the previous transaction is complete.
 				//Otherwise the unsent data waiting in the buffer will get overwritten and will result in unexpected behavior.
-                if(!USBHandleBusy(USBGenericInHandle))
-	            {
+         //       if(!USBHandleBusy(USBGenericInHandle))
+	  //          {
 		            //The endpoint was not "busy", therefore it is safe to write to the buffer and arm the endpoint.
 	                //The USBGenWrite() function call "arms" the endpoint (and makes the handle indicate the endpoint is busy).
 	                //Once armed, the data will be automatically sent to the host (in hardware by the SIE) the next time the
 	                //host polls the endpoint.  Once the data is successfully sent, the handle (in this case USBGenericInHandle)
 	                //will indicate the the endpoint is no longer busy.
-					USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM,(BYTE*)&INPacket,USBGEN_EP_SIZE);
-                }
-                break;
-        }
+	//				USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM,(BYTE*)&INPacket,USBGEN_EP_SIZE);
+          //      }
+            //    break;
+        //}
 
         //Re-arm the OUT endpoint for the next packet:
 	    //The USBGenRead() function call "arms" the endpoint (and makes it "busy").  If the endpoint is armed, the SIE will
 	    //automatically accept data from the host, if the host tries to send a packet of data to the endpoint.  Once a data
 	    //packet addressed to this endpoint is received from the host, the endpoint will no longer be busy, and the application
 	    //can read the data which will be sitting in the buffer.
-        USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM,(BYTE*)&OUTPacket,USBGEN_EP_SIZE);
-    }
+        //USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM,(BYTE*)&OUTPacket,USBGEN_EP_SIZE);
+    //}
 }//end ProcessIO
 
