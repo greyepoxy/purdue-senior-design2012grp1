@@ -122,6 +122,7 @@ int32_t main(void)
     accel_x_off = 0;
     accel_y_off = 0;
     accel_z_off = 0;
+    count = 0;
 
 
     InitializeSystem();
@@ -129,6 +130,17 @@ int32_t main(void)
     #if defined(USB_INTERRUPT)
         USBDeviceAttach();
     #endif
+
+    //SPI initlizatons
+    SpiChnOpen(3,SPI_OPEN_SLVEN | SPI_OPEN_MODE8 | SPI_OPEN_ENHBUF /*| SPI_OPEN_CKE_REV*/, 1106);
+    //SpiChnEnable(3, 0);
+    //SpiChnConfigure(3, SPI_CONFIG_SLVEN|SPI_CONFIG_MODE8|SPI_CONFIG_RBF_NOT_EMPTY | SPI_CONFIG_ENHBUF);
+    //SpiChnSetBitRate(3, 80000000, 72282);
+    //SpiChnEnable(3, 1);
+    INTSetVectorPriority(INT_VECTOR_SPI(INT_SPI3), INT_PRIORITY_LEVEL_2);
+    INTSetVectorSubPriority(INT_VECTOR_SPI(INT_SPI3), INT_SUB_PRIORITY_LEVEL_0);
+    INTEnable(INT_SOURCE_SPI(INT_SPI3),INT_ENABLED);
+
 
     while(1)
     {
@@ -139,6 +151,18 @@ int32_t main(void)
             c_flag = queue[front];
             queue[front] = 0;
             front = (front + 1) % 5;
+        }
+
+        if(!SpiChnRxBuffEmpty(3)){
+            if(count == 0){
+                x_pix =  SpiChnGetC(3);
+                count++;
+            }
+            else if(count == 1){
+                y_pix = SpiChnGetC(3);
+                count = 0;
+                Insertion_Sort(CAM_PRI);
+        }
         }
 
         // This is a usb function that sends data over usb when sent the command 0x80
@@ -219,10 +243,11 @@ int32_t main(void)
                     accel_z = tData + accel_z_off;
             }
             //Placing senor readings into the data array for USB transmission
-            if(calibration = '1'){
+            if(calibration == 1){
                 accel_x_off = accel_x;
                 accel_y_off = accel_y;
                 accel_z_off = accel_z;
+                calibration = 0;
             }
             data[0] = 0x11;
             data[1] = (char)(accel_x >> 8);
@@ -321,6 +346,12 @@ int32_t main(void)
 
         //This function prepares the pixel displacement data for transmission over USB
         if(c_flag == CAM_PRI){
+            //convIntToString((int)x_pix, charArray);
+            //bufferSpaces(charArray);
+            //WriteString(charArray);
+            //convIntToString((int)y_pix, charArray);
+            //bufferSpaces(charArray);
+            //WriteString(charArray);
             data[24] = 0x15;
             data[25] = x_pix;
             data[26] = y_pix;
@@ -343,7 +374,7 @@ static void InitializeSystem(void)
     SYSTEMConfig(SYS_FREQ, SYS_CFG_WAIT_STATES | SYS_CFG_PCACHE);
 
     /* Initialize I/O and Peripherals for application */
-    InitApp();
+    
 
 	// LED port
 	//PORTSetPinsDigitalOut(IOPORT_D, BIT_7);
@@ -398,13 +429,16 @@ static void InitializeSystem(void)
     tris_self_power = INPUT_PIN;	// See HardwareProfile.h
     #endif
 
-	USBGenericOutHandle = 0;
-	USBGenericInHandle = 0;
+    USBGenericOutHandle = 0;
+    USBGenericInHandle = 0;
 
     USBDeviceInit();	//usb_device.c.  Initializes USB module SFRs and firmware
     					//variables to known states.
+    while(!((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)));
 
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
+
+    InitApp();
 }//end InitializeSystem
 
 void ProcessIO(void)
