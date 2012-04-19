@@ -9,6 +9,7 @@
 //------------------------------------------------------------------------------
 	#include "TCM8230.h"
 	#include <AT91SAM9XE256.H>
+	#include "spi.h"
 
 //------------------------------------------------------------------------------
 //		Global Variables
@@ -29,6 +30,11 @@
 	//					   communication.
 	//------------------------------------------------------------------------------
 		void Camera_Init (AT91S_TWI *pTwi) {
+
+					
+			SPI_Configure(AT91C_BASE_SPI0, 0, 0x00000011);//0x00000011);
+			SPI_ConfigureNPCS(AT91C_BASE_SPI0, 0, 0x0000FF08);	
+			AT91C_BASE_SPI0->SPI_CR = 0x00000001;
 
 			//Initilzing the TWI periferial and configuiring it as a master
 			TWI_ConfigureMaster(pTwi, TWCK, 18432000);
