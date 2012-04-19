@@ -151,7 +151,7 @@ void __ISR(_CHANGE_NOTICE_VECTOR, IPL2SOFT) ChangeNotice_Handler(void)
     // clear the interrupt flag
     mCNClearIntFlag();
 
-    if (temp == 0xFFFE)
+    if (temp == 0x0B77)
     {
         // .. things to do .. toggle the button flag
     calibration = 1;
