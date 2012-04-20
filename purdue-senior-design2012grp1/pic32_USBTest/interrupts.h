@@ -22,7 +22,7 @@ volatile unsigned int TBufferTail;
 volatile unsigned int an15Data;
 volatile unsigned int front;
 volatile unsigned int rear;
-volatile unsigned int queue[5];
+volatile unsigned int queue[6];
 volatile unsigned int checkatd;
 volatile unsigned int tcount;
 volatile unsigned char data[27];
@@ -31,6 +31,9 @@ volatile unsigned char x_pix;
 volatile unsigned char y_pix;
 volatile unsigned char calibration;
 volatile unsigned char count;
+volatile unsigned int dis_flag;
+volatile unsigned int cam_flag;
+volatile unsigned int dis_tout;
 
 void PutCharacter(const char);
 
