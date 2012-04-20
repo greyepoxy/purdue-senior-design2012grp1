@@ -35,7 +35,7 @@ USB_HANDLE USBGenericInHandle;
 #define	GetPeripheralClock()          (GetSystemClock()/(1 << OSCCONbits.PBDIV))
 #define DESIRED_BAUDRATE    (9600)      //The desired BaudRate
 // I2C Constants
-#define I2C_CLOCK_FREQ      100000
+#define I2C_CLOCK_FREQ      400000
 #define I2C_BUS             I2C1
 #define ACCEL_ADDRESS       0x1D    // 0b011101 MMA8452 address
 /* Set the scale below either 2, 4 or 8*/
@@ -332,9 +332,9 @@ int32_t main(void)
             //calculate the distance
             distance = ((340290 * tcount)/1000000) - 740;
             //prints out the distace calculation over RS232
-            convIntToString(distance, charArray);
-            bufferSpaces(charArray);
-            WriteString(charArray);
+            //convIntToString(distance, charArray);
+            //bufferSpaces(charArray);
+            //WriteString(charArray);
             //resets tcount
             tcount = 0;
             //store data for USB transmission
@@ -456,26 +456,33 @@ void ProcessIO(void)
     {
         switch(OUTPacket[0])
         {
-            case 0x80:
-             for(i=0;i < 27; i++){
-                    INPacket[i] = data[i];
-             }
-             if(!USBHandleBusy(USBGenericInHandle))
-	        {
-		        //The endpoint was not "busy", therefore it is safe to write to the buffer and arm the endpoint.
+			case 0x80:
+				for(i=0;i < 27; i++){
+					INPacket[i] = data[i];
+				}
+				if(!USBHandleBusy(USBGenericInHandle))
+				{
+					//The endpoint was not "busy", therefore it is safe to write to the buffer and arm the endpoint.
 	                //The USBGenWrite() function call "arms" the endpoint (and makes the handle indicate the endpoint is busy).
 	                //Once armed, the data will be automatically sent to the host (in hardware by the SIE) the next time the
 	                //host polls the endpoint.  Once the data is successfully sent, the handle (in this case USBGenericInHandle)
 	                //will indicate the the endpoint is no longer busy.
 					USBGenericInHandle = USBGenWrite(USBGEN_EP_NUM,(BYTE*)&INPacket,USBGEN_EP_SIZE);
+					int datasent = 0;
                 }
-             data[0] = 0x01;
-             data[7] = 0x02;
-             data[14] = 0x03;
-             data[21] = 0x04;
-             data[24] = 0x05;
-             break;
+				data[0] = 0x01;
+				data[7] = 0x02;
+				data[14] = 0x03;
+				data[21] = 0x04;
+				data[24] = 0x05;
+				break;
         }
+		//Re-arm the OUT endpoint for the next packet:
+	    //The USBGenRead() function call "arms" the endpoint (and makes it "busy").  If the endpoint is armed, the SIE will
+	    //automatically accept data from the host, if the host tries to send a packet of data to the endpoint.  Once a data
+	    //packet addressed to this endpoint is received from the host, the endpoint will no longer be busy, and the application
+	    //can read the data which will be sitting in the buffer.
+		USBGenericOutHandle = USBGenRead(USBGEN_EP_NUM,(BYTE*)&OUTPacket,USBGEN_EP_SIZE);
     }
 
     //As the device completes the enumeration process, the USBCBInitEP() function will
