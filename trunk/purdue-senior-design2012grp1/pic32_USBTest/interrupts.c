@@ -122,6 +122,7 @@ void __ISR(_TIMER_2_VECTOR, IPL2SOFT) Timer2Handler(void)
     // clear the interrupt flag
     mT2ClearIntFlag();
     // increment tcount
+    if(dis_flag == 0){
     tcount++;
     	int offset = 8 * ((~ReadActiveBufferADC10() & 0x01));
 	an15Data = ReadADC10(offset);
@@ -132,12 +133,18 @@ void __ISR(_TIMER_2_VECTOR, IPL2SOFT) Timer2Handler(void)
             INTEnable(INT_T2, INT_DISABLED);
             //mAD1IntEnable(INT_DISABLED);
             Insertion_Sort(DIS_PRI);
+            dis_tout = 1;
+
         }
         if(an15Data >= 530){
             INTEnable(INT_T2, INT_DISABLED);
             //mAD1IntEnable(INT_DISABLED);
             Insertion_Sort(DIS_PRI);
+            dis_flag = 1;
         }
+    }
+    else
+        INTEnable(INT_T2, INT_DISABLED);
 
 }
 

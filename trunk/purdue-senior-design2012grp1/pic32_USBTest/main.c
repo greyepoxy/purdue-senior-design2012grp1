@@ -132,7 +132,7 @@ int32_t main(void)
     #endif
 
     //SPI initlizatons
-    SpiChnOpen(3,SPI_OPEN_SLVEN | SPI_OPEN_MODE8 | SPI_OPEN_ENHBUF /*| SPI_OPEN_CKE_REV*/, 1106);
+    SpiChnOpen(3,SPI_OPEN_SLVEN | SPI_OPEN_MODE8 | SPI_OPEN_ENHBUF  /*| SPI_OPEN_CKE_REV*/, 1106);
     //SpiChnEnable(3, 0);
     //SpiChnConfigure(3, SPI_CONFIG_SLVEN|SPI_CONFIG_MODE8|SPI_CONFIG_RBF_NOT_EMPTY | SPI_CONFIG_ENHBUF);
     //SpiChnSetBitRate(3, 80000000, 72282);
@@ -150,7 +150,7 @@ int32_t main(void)
         if(front != rear){
             c_flag = queue[front];
             queue[front] = 0;
-            front = (front + 1) % 5;
+            front = (front + 1) % 6;
         }
 
         if(!SpiChnRxBuffEmpty(3)){
@@ -161,7 +161,9 @@ int32_t main(void)
             else if(count == 1){
                 y_pix = SpiChnGetC(3);
                 count = 0;
+                if(cam_flag == 0)
                 Insertion_Sort(CAM_PRI);
+                cam_flag = 1;
         }
         }
 
@@ -171,7 +173,7 @@ int32_t main(void)
         //Debugging function that if not commmented out it sends the IMU data over RS232
         if (timer1Flag == 1) {
             //Accelerometer Data
-            /*WriteString("\rAccel-> x: ");
+            WriteString("Accel-> x: ");
             convIntToString(accel_x, charArray);
             bufferSpaces(charArray);
             WriteString(charArray);
@@ -210,11 +212,19 @@ int32_t main(void)
             convIntToString(gyro_z, charArray);
             bufferSpaces(charArray);
             WriteString(charArray);
-            mPORTDToggleBits(BIT_7);
+            //mPORTDToggleBits(BIT_7);
             convIntToString(an15Data, charArray);
             bufferSpaces(charArray);
+            WriteString(charArray);
             WriteString("\r\n");
-            WriteString(charArray);*/
+            /*WriteString(" Distance =");
+            convIntToString(distance, charArray);
+            bufferSpaces(charArray);
+            WriteString(charArray);
+            WriteString("Pixel Offset =");
+            WriteChar(x_pix);
+            WriteString(" , ");
+            WriteChar(y_pix);*/
             timer1Flag = 0;
 	}
 
@@ -244,9 +254,9 @@ int32_t main(void)
             }
             //Placing senor readings into the data array for USB transmission
             if(calibration == 1){
-                accel_x_off = accel_x;
-                accel_y_off = accel_y;
-                accel_z_off = accel_z;
+                accel_x_off = accel_x - accel_x_off;
+                accel_y_off = accel_y - accel_y_off;
+                accel_z_off = accel_z - accel_z_off;
                 calibration = 0;
             }
             data[0] = 0x11;
@@ -256,6 +266,7 @@ int32_t main(void)
             data[4] = (char)accel_y;
             data[5] = (char)(accel_z >> 8);
             data[6] = (char)accel_z;
+            c_flag = 0;
             //Reenable interrupts
             EnableINT1;
 	}
@@ -289,6 +300,7 @@ int32_t main(void)
             data[18] = (char)mag_y;
             data[19] = (char)(mag_z >> 8);
             data[20] = (char)mag_z;
+            c_flag = 0;
             //Reenabling interrupts
             EnableINT0;
 	}
@@ -322,6 +334,7 @@ int32_t main(void)
             data[11] = (char)gyro_y;
             data[12] = (char)(gyro_z >> 8);
             data[13] = (char)gyro_z;
+            c_flag=0;
             // Reanable interrupts
             EnableINT4;
 	}
@@ -330,7 +343,7 @@ int32_t main(void)
         // RS232 and also store the data for USB transmission
         if(c_flag == DIS_PRI){
             //calculate the distance
-            distance = ((340290 * tcount)/1000000) - 740;
+            distance = ((340290 * tcount)/100000) - 740;
             //prints out the distace calculation over RS232
             //convIntToString(distance, charArray);
             //bufferSpaces(charArray);
@@ -341,6 +354,8 @@ int32_t main(void)
             data[21] = 0x14;
             data[22] = (char)(distance >> 8);
             data[23] = (char) distance;
+            dis_flag = 0;
+            c_flag = 0;
 
         }
 
@@ -355,6 +370,8 @@ int32_t main(void)
             data[24] = 0x15;
             data[25] = x_pix;
             data[26] = y_pix;
+            cam_flag = 0;
+            c_flag = 0;
         }
    }//end while
 }
@@ -434,7 +451,7 @@ static void InitializeSystem(void)
 
     USBDeviceInit();	//usb_device.c.  Initializes USB module SFRs and firmware
     					//variables to known states.
-    while(!((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)));
+    //while(!((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)));
 
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
 

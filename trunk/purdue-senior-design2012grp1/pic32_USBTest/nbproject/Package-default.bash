@@ -10,9 +10,9 @@ CND_CONF=default
 CND_DISTDIR=dist
 TMPDIR=build/${CND_CONF}/${IMAGE_TYPE}/tmp-packaging
 TMPDIRNAME=tmp-packaging
-OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/pic32_USBTest.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-OUTPUT_BASENAME=pic32_USBTest.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
-PACKAGE_TOP_DIR=pic32usbtest/
+OUTPUT_PATH=dist/${CND_CONF}/${IMAGE_TYPE}/USBPic32_Code.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+OUTPUT_BASENAME=USBPic32_Code.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+PACKAGE_TOP_DIR=usbpic32code/
 
 # Functions
 function checkReturnCode
@@ -57,15 +57,15 @@ mkdir -p ${TMPDIR}
 
 # Copy files and create directories and links
 cd "${TOP}"
-makeDirectory ${TMPDIR}/pic32usbtest/bin
+makeDirectory ${TMPDIR}/usbpic32code/bin
 copyFileToTmpDir "${OUTPUT_PATH}" "${TMPDIR}/${PACKAGE_TOP_DIR}bin/${OUTPUT_BASENAME}" 0755
 
 
 # Generate tar file
 cd "${TOP}"
-rm -f ${CND_DISTDIR}/${CND_CONF}/package/pic32usbtest.tar
+rm -f ${CND_DISTDIR}/${CND_CONF}/package/usbpic32code.tar
 cd ${TMPDIR}
-tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/pic32usbtest.tar *
+tar -vcf ../../../../${CND_DISTDIR}/${CND_CONF}/package/usbpic32code.tar *
 checkReturnCode
 
 # Cleanup

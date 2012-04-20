@@ -32,7 +32,7 @@
 #define GYRO_ADDRESS		0x69	// address of ITG-3200 0xb1101001
 #define CHAR_ARRAY_LENGTH	6
 // Timer 1 tick rate
-#define T1_PRESCALE         512 //256
+#define T1_PRESCALE         256 //256
 #define T1_TICK       		(SYS_FREQ/PB_DIV/T1_PRESCALE)
 
 
@@ -113,7 +113,7 @@ void InitApp(void)
     OpenTimer1(T1_ON | T1_PS_1_256, T1_TICK); //one second interrupts
     ConfigIntTimer1(T1_INT_ON | T1_INT_PRIOR_2);
 
-    OpenTimer2(T2_ON | T2_PS_1_4, 1); //one second interrupts
+    OpenTimer2(T2_ON | T2_PS_1_4, 10); //one second interrupts
     ConfigIntTimer2(T2_INT_OFF | T1_INT_PRIOR_2);
 
 
@@ -223,20 +223,45 @@ void InitApp(void)
 void Insertion_Sort(int flag){
 
     //Highest prioerity is 1
-    int temp;
-    int i;
+    //int temp;
+    int i,j;
+    int inside = 0;
 
-    rear++;
-    rear = rear % 5;
-    i= rear;
-
-        while(flag < queue[i] || (i+1) % 5 == front){
-            queue[(i+1) % 5] = queue[i];
-            i--;
-            if(i == -1)
-                i += 5;
+    for(i=0;i<6;i++)
+        if(flag == queue[i])
+            inside = 1; // flag all ready in queue so skip
+    if(inside == 0){
+        if (rear == front) // special case queue empty
+            queue[rear] = flag;
+        else { // normal insertion
+            i = (rear - 1) % 6;
+            j = rear;
+            // sorts from least to greatest, never replace the head
+            //  because main program could be dequeueing it form the queue
+            //  while an interrupt is adding this flag.
+            while ((i != front) && (queue[i] > flag))
+            {
+                queue[j] = queue[i];
+                j = i;
+                i = (i-1)%6;
+            }
+            queue[j] = flag;
         }
-    queue[(i) % 5] = flag;
+        rear = (rear + 1) % 6;
+//    rear++;
+//    rear = rear % 6;
+//    i= rear;
+//
+//        while(flag < queue[i] || (i+1) % 6 == front){
+//            queue[(i+1) % 6] = queue[i];
+//            i--;
+//            if(i == -1)
+//                i += 6;
+//        }
+//    queue[(i-1) % 6] = flag;
+    }
+    else
+        return;
 }
 
 // helper functions
@@ -381,7 +406,7 @@ BOOL I2CStartTransfer( BOOL restart)
     {
         status = I2CGetStatus(I2C_BUS);
 		if (status & I2C_ARBITRATION_LOSS) {
-			WriteChar("A_L\n");
+			//WriteChar("A_L\n");
 			return FALSE;
 		}
 
