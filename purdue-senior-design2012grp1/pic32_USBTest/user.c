@@ -380,8 +380,10 @@ BOOL I2CStartTransfer( BOOL restart)
     do
     {
         status = I2CGetStatus(I2C_BUS);
-		if (status & I2C_ARBITRATION_LOSS)
+		if (status & I2C_ARBITRATION_LOSS) {
+			WriteChar("A_L\n");
 			return FALSE;
+		}
 
     } while ( !(status & I2C_START) );
 
