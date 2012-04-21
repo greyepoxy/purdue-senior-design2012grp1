@@ -173,7 +173,7 @@ int32_t main(void)
         //Debugging function that if not commmented out it sends the IMU data over RS232
         if (timer1Flag == 1) {
             //Accelerometer Data
-            WriteString("Accel-> x: ");
+            /*WriteString("Accel-> x: ");
             convIntToString(accel_x, charArray);
             bufferSpaces(charArray);
             WriteString(charArray);
