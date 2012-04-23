@@ -65,10 +65,12 @@ void InitApp(void)
 
     //PORTSetPinsDigitalOut(IOPORT_A, BIT_0);
     //PORTSetPinsDigitalIn(IOPORT_D, BIT_6);
-	PORTSetPinsDigitalOut(IOPORT_D, BIT_7);
-	PORTSetPinsDigitalOut(IOPORT_D, BIT_5);
+	PORTSetPinsDigitalOut(IOPORT_D, BIT_7); // Output Pin to LED
+	PORTSetPinsDigitalOut(IOPORT_D, BIT_5); // RD5 and 6 control Atmel and Camera
 	PORTSetPinsDigitalOut(IOPORT_D, BIT_6);
-	mPORTDClearBits(BIT_7 | BIT_6 | BIT_5);
+	PORTSetPinsDigitalOut(IOPORT_D, BIT_4); // RD4 controls sleep mode of Xbee
+	mPORTDClearBits(BIT_7 | BIT_6 | BIT_5); // This will turn off the camera
+	mPORTDSetBits(BIT_4); // Setting this bit puts Xbee to sleep
 
     //mPORTAClearBits(BIT_0);
     mCNOpen(CN_ON | CN_IDLE_CON, CN7_ENABLE, CN7_PULLUP_ENABLE);
@@ -104,7 +106,7 @@ void InitApp(void)
     UARTSetDataRate(UART3, GetPeripheralClock(), DESIRED_BAUDRATE);
     UARTEnable(UART3, UART_ENABLE_FLAGS(UART_PERIPHERAL | UART_RX | UART_TX));
 
-    // Configure UART2 RX Interrupt
+    // Configure UART3 RX Interrupt
     INTSetVectorPriority(INT_VECTOR_UART(UART3), INT_PRIORITY_LEVEL_2);
     INTSetVectorSubPriority(INT_VECTOR_UART(UART3), INT_SUB_PRIORITY_LEVEL_0);
     INTEnable(INT_SOURCE_UART_RX(UART3), INT_ENABLED);
@@ -115,11 +117,6 @@ void InitApp(void)
 
     OpenTimer2(T2_ON | T2_PS_1_4, 10); //one second interrupts
     ConfigIntTimer2(T2_INT_OFF | T1_INT_PRIOR_2);
-
-
-    //Enable Camera Peripheral and Linear regulators
-    mPORTDSetBits(BIT_6 | BIT_5);
-    WriteString("CAM ON \n\r");
 
 	CloseADC10();
 	//Set up analog to digital converter for port pin AN15
@@ -615,7 +612,7 @@ BOOL initMMA8452(UINT8 fsr, UINT8 dataRate)
 BOOL initMAG3110(void)
 {
 	// enable auto resets
-	if (!I2CSingleByteWrite(MAG_ADDRESS, 0x11, 0x80))
+	if (!I2CSingleByteWrite(MAG_ADDRESS, 0x11, 0xA0))
 		return false;
 	// set ODR = 40 hz, OSR = 1, enable sensor
 	if (!I2CSingleByteWrite(MAG_ADDRESS, 0x10, 0x21))
