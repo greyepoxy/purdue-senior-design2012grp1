@@ -56,6 +56,9 @@ int accel_z;
 int accel_x_off;
 int accel_y_off;
 int accel_z_off;
+int gyro_x_off;
+int gyro_y_off;
+int gyro_z_off;
 INT16 mag_x, mag_y, mag_z;
 INT16 gyro_x, gyro_y, gyro_z;
 volatile char rs232TBuffer[TBufferSize];
@@ -118,18 +121,30 @@ int32_t main(void)
     distance = 0;
     x_pix = 0;
     y_pix = 0;
-    calibration = 0;
+    calibrationAccel = 0;
+	calibrationGyro = 0;
     accel_x_off = 0;
     accel_y_off = 0;
     accel_z_off = 0;
     count = 0;
+	dis_flag = 0;
 
 
     InitializeSystem();
 
+	// Initilize other peripherals
+	InitApp();
+
     #if defined(USB_INTERRUPT)
         USBDeviceAttach();
     #endif
+
+	//// Wait until USB is configured
+	while((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1));
+	//Enable Camera Peripheral and Linear regulators
+    mPORTDSetBits(BIT_6 | BIT_5);
+	mPORTDClearBits(BIT_4); // Wake Xbee from sleep mode
+    WriteString("CAM ON \n\r");
 
     //SPI initlizatons
     SpiChnOpen(3,SPI_OPEN_SLVEN | SPI_OPEN_MODE8 | SPI_OPEN_ENHBUF  /*| SPI_OPEN_CKE_REV*/, 1106);
@@ -240,25 +255,29 @@ int32_t main(void)
             /* loop to calculate 12-bit ADC and g value for each axis */
             for (i=0; i<6; i+=2)
             {
-                // Turn the MSB and LSB into a 12-bit value
-                tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
-		// If the number is negative, we have to make it so manually (no 12-bit data type)
-		if (rawData[i] > 0x7F)
-                    tData -= 4096;
-		if (i == 0)
-                    accel_x = tData + accel_x_off;
-		else if (i == 2)
-                    accel_y = tData + accel_y_off;
-		else
-                    accel_z = tData + accel_z_off;
-            }
+				// Turn the MSB and LSB into a 12-bit value
+				tData = ((rawData[i] << 8) | rawData[i+1]) >> 4;
+				// If the number is negative, we have to make it so manually (no 12-bit data type)
+				if (rawData[i] > 0x07F)
+					tData -= 4096;
+				if (i == 0)
+					accel_x = tData;
+				else if (i == 2)
+					accel_y = tData;
+				else
+					accel_z = tData;
+			}
             //Placing senor readings into the data array for USB transmission
-            if(calibration == 1){
-                accel_x_off = accel_x - accel_x_off;
-                accel_y_off = accel_y - accel_y_off;
-                accel_z_off = accel_z - accel_z_off;
-                calibration = 0;
+            if(calibrationAccel == 1){
+				accel_x_off = accel_x;
+                accel_y_off = accel_y;
+                accel_z_off = 1024 - accel_z;
+                calibrationAccel = 0;
             }
+			accel_x -= accel_x_off;
+			accel_y -= accel_y_off;
+			accel_z -= accel_z_off;
+			
             data[0] = 0x11;
             data[1] = (char)(accel_x >> 8);
             data[2] = (char)accel_x;
@@ -283,13 +302,13 @@ int32_t main(void)
             for (i=0; i<6; i+=2)
             {
                 // Turn the MSB and LSB into a 16-bit value
-		tData = ((rawData[i] << 8) | rawData[i+1]);
-		if (i == 0)
-                    mag_x = tData;
-		else if (i == 2)
-                    mag_y = tData;
-		else
-                    mag_z = tData;
+				tData = ((rawData[i] << 8) | rawData[i+1]);
+				if (i == 0)
+					mag_x = tData;
+				else if (i == 2)
+					mag_y = tData;
+				else
+					mag_z = tData;
             }
 
             //Putting data into the data array for USB transmission
@@ -317,15 +336,25 @@ int32_t main(void)
             /* loop to calculate 16-bit ADC values for each axis */
             for (i=0; i<6; i+=2)
             {
-                // Turn the MSB and LSB into a 16-bit value
-		tData = ((rawData[i] << 8) | rawData[i+1]);
-		if (i == 0)
-                    gyro_x = tData;
-		else if (i == 2)
-                    gyro_y = tData;
-		else
-                    gyro_z = tData;
+				// Turn the MSB and LSB into a 16-bit value
+				tData = ((rawData[i] << 8) | rawData[i+1]);
+				if (i == 0)
+					gyro_x = tData;
+				else if (i == 2)
+					gyro_y = tData;
+				else
+					gyro_z = tData;
             }
+			if(calibrationGyro == 1){
+				gyro_x_off = gyro_x;
+                gyro_y_off = gyro_y;
+                gyro_z_off = gyro_z;
+                calibrationGyro = 0;
+            }
+			gyro_x -= gyro_x_off;
+			gyro_y -= gyro_y_off;
+			gyro_z -= gyro_z_off;
+
             //Putting the data into the data array for USB transmission
             data[7] = 0x13;
             data[8] = (char)(gyro_x >> 8);
@@ -343,19 +372,24 @@ int32_t main(void)
         // RS232 and also store the data for USB transmission
         if(c_flag == DIS_PRI){
             //calculate the distance
-            distance = ((340290 * tcount)/100000) - 740;
+            distance = 0.543*tcount - 22319;
+					//(4e-6)*tcount*tcount*tcount - 0.476*tcount*tcount + 19742*tcount - 3e8;
+					//(tcount-40000)*0.4;//*0.170145;//((34029 * (tcount))/20000000);
+			if (distance < 0)
+				distance = 0;
             //prints out the distace calculation over RS232
             //convIntToString(distance, charArray);
             //bufferSpaces(charArray);
             //WriteString(charArray);
             //resets tcount
-            tcount = 0;
             //store data for USB transmission
             data[21] = 0x14;
-            data[22] = (char)(distance >> 8);
-            data[23] = (char) distance;
+            data[22] = (char)(distance >> 8);//(tcount >> 8);
+            data[23] = (char)distance;//tcount;
             dis_flag = 0;
             c_flag = 0;
+			tcount = 0;
+			WriteString("new DATA\n\r");
 
         }
 
@@ -454,8 +488,7 @@ static void InitializeSystem(void)
     //while(!((USBDeviceState < CONFIGURED_STATE)||(USBSuspendControl==1)));
 
     INTConfigureSystem(INT_SYSTEM_CONFIG_MULT_VECTOR);
-
-    InitApp();
+	
 }//end InitializeSystem
 
 void ProcessIO(void)

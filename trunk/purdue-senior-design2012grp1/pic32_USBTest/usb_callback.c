@@ -1,5 +1,6 @@
 
 #include "usb_callback.h"
+#include "user.h"
 
 // ******************************************************************************************************
 // ************** USB Callback Functions ****************************************************************
@@ -36,6 +37,10 @@
  *****************************************************************************/
 void USBCBSuspend(void)
 {
+	mPORTDClearBits(BIT_6 | BIT_5); // This will turn of the camera
+	mPORTDSetBits(BIT_4); // Setting this bit puts Xbee to sleep
+	WriteString("USB Suspend\n\r");
+
 	//Example power saving code.  Insert appropriate code here for the desired
 	//application behavior.  If the microcontroller will be put to sleep, a
 	//process similar to that shown below may be used:
@@ -112,6 +117,10 @@ void __attribute__ ((interrupt)) _USB1Interrupt(void)
  *****************************************************************************/
 void USBCBWakeFromSuspend(void)
 {
+	//Enable Camera Peripheral and Linear regulators
+    mPORTDSetBits(BIT_6 | BIT_5);
+	mPORTDClearBits(BIT_4); // Wake Xbee from sleep mode
+	WriteString("USB WakeUp\n\r");
 	// If clock switching or other power savings measures were taken when
 	// executing the USBCBSuspend() function, now would be a good time to
 	// switch back to normal full power run mode conditions.  The host allows

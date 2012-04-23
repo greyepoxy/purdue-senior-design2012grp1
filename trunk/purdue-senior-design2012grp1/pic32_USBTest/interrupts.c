@@ -123,18 +123,18 @@ void __ISR(_TIMER_2_VECTOR, IPL2SOFT) Timer2Handler(void)
     mT2ClearIntFlag();
     // increment tcount
     if(dis_flag == 0){
-    tcount++;
-    	int offset = 8 * ((~ReadActiveBufferADC10() & 0x01));
-	an15Data = ReadADC10(offset);
+		tcount++;
+		int offset = 8 * ((~ReadActiveBufferADC10() & 0x01));
+		an15Data = ReadADC10(offset);
         //convIntToString(an15Data, charArray);
         //bufferSpaces(charArray);
         //WriteString(charArray);
-        if(tcount >= 90000){
+        if(tcount >= 48470){
             INTEnable(INT_T2, INT_DISABLED);
             //mAD1IntEnable(INT_DISABLED);
-            Insertion_Sort(DIS_PRI);
+            //Insertion_Sort(DIS_PRI);
             dis_tout = 1;
-
+			tcount = 0;
         }
         if(an15Data >= 530){
             INTEnable(INT_T2, INT_DISABLED);
@@ -153,16 +153,17 @@ void __ISR(_CHANGE_NOTICE_VECTOR, IPL2SOFT) ChangeNotice_Handler(void)
     unsigned int temp;
 
     // clear the mismatch condition
-    temp = mPORTDRead();
+    temp = mPORTBRead();
 
     // clear the interrupt flag
     mCNClearIntFlag();
 
-    if (temp == 0x0B77)
+    if ((temp & 0x20) > 0)
     {
         // .. things to do .. toggle the button flag
-    calibration = 1;
-    //mPORTAToggleBits(BIT_0);
+		calibrationAccel = 1;
+		calibrationGyro = 1;
+		//mPORTAToggleBits(BIT_0);
     }
 }
 
@@ -235,7 +236,7 @@ void __ISR(_UART_3_VECTOR, IPL2SOFT) IntUart3Handler(void)
         // Echo what we just received.
         //PutCharacter(temp);
         int test = temp;
-        if(test == 0x35){
+        if((test == 0x35) && (dis_flag != 1)){
                 //Configure the T2 timer which counts the number of us till the ultrasonics appears on the ATD to 1 us
                 //OpenTimer2(T2_ON | T2_PS_1_4, 1); //one second interrupts
                 INTEnable(INT_T2, INT_ENABLED);
