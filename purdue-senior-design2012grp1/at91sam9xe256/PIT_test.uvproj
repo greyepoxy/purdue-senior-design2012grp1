@@ -451,6 +451,11 @@
               <FileType>5</FileType>
               <FilePath>.\header files\isi.h</FilePath>
             </File>
+            <File>
+              <FileName>spi.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\header files\spi.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -505,6 +510,11 @@
               <FileName>main.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\header files\spi.c</FilePath>
             </File>
           </Files>
         </Group>

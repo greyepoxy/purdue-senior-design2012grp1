@@ -4,33 +4,9 @@
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
 C:\Documents and Settings\team1\My Documents\AT91 Code\PIT_test.uvproj
-Project File Date:  04/09/2012
+Project File Date:  04/18/2012
 
 <h2>Output:</h2>
-Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
-Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
-/******************************************************************************/
-/* Clock.ini: Initialize clock to Main Oscillator clock                       */
-/******************************************************************************/
-// <<< Use Configuration Wizard in Context Menu >>>                           // 
-/******************************************************************************/
-/* This file is part of the uVision/ARM development tools.                    */
-/* Copyright (c) 2005-2010 Keil Software. All rights reserved.                */
-/* This software may only be used under the terms of a valid, current,        */
-/* end user licence from KEIL for a compatible version of KEIL software       */
-/* development tools. Nothing else gives you the right to use this software.  */
-/******************************************************************************/
-DEFINE LONG PMC;
-PMC = 0xFFFFFC00;
-_WDWORD(PMC+0x20, 0x00000701);      // CKGR_MOR: Enable main oscillator
-_sleep_(10);                        // Wait for stable Main Oscillator
-_WDWORD(PMC+0x30, 0x00000000);      // PMC_MCKR: PRES field 0
-_sleep_(10);                        // Wait for Master Clock ready
-_WDWORD(PMC+0x30, 0x00000001);      // PMC_MCKR: Select Main Oscillator clock
-_sleep_(10);                        // Wait for Master Clock ready
-Erase Done.
-Programming Done.
-Verify OK.
 Rebuild target 'Target 1'
 compiling pit.c...
 compiling aic.c...
@@ -42,12 +18,13 @@ compiling pio.c...
 compiling TCM8230.c...
 compiling isi.c...
 compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-main.c(47): warning:  #550-D: variable "rbyte1" was set but never used
+main.c(18): warning:  #61-D: integer operation result is out of range
+main.c(18): warning:  #68-D: integer conversion resulted in a change of sign
+main.c(52): warning:  #550-D: variable "rbyte2" was set but never used
+compiling spi.c...
 assembling SAM9XE.s...
 linking...
-Program Size: Code=3884 RO-data=152 RW-data=4 ZI-data=5348  
+Program Size: Code=4496 RO-data=188 RW-data=8 ZI-data=7416  
 "PIT_test.axf" - 0 Error(s), 3 Warning(s).
 Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
 Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
@@ -84,12 +61,13 @@ compiling pio.c...
 compiling TCM8230.c...
 compiling isi.c...
 compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-main.c(47): warning:  #550-D: variable "rbyte1" was set but never used
+main.c(18): warning:  #61-D: integer operation result is out of range
+main.c(18): warning:  #68-D: integer conversion resulted in a change of sign
+main.c(52): warning:  #550-D: variable "rbyte2" was set but never used
+compiling spi.c...
 assembling SAM9XE.s...
 linking...
-Program Size: Code=3880 RO-data=152 RW-data=4 ZI-data=5348  
+Program Size: Code=4496 RO-data=188 RW-data=8 ZI-data=7416  
 "PIT_test.axf" - 0 Error(s), 3 Warning(s).
 Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
 Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
@@ -126,12 +104,13 @@ compiling pio.c...
 compiling TCM8230.c...
 compiling isi.c...
 compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-main.c(47): warning:  #550-D: variable "rbyte1" was set but never used
+main.c(18): warning:  #61-D: integer operation result is out of range
+main.c(18): warning:  #68-D: integer conversion resulted in a change of sign
+main.c(52): warning:  #550-D: variable "rbyte2" was set but never used
+compiling spi.c...
 assembling SAM9XE.s...
 linking...
-Program Size: Code=3880 RO-data=152 RW-data=4 ZI-data=7420  
+Program Size: Code=4504 RO-data=188 RW-data=8 ZI-data=7416  
 "PIT_test.axf" - 0 Error(s), 3 Warning(s).
 Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
 Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
@@ -158,29 +137,6 @@ Erase Done.
 Programming Done.
 Verify OK.
 Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
-Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
-/******************************************************************************/
-/* Clock.ini: Initialize clock to Main Oscillator clock                       */
-/******************************************************************************/
-// <<< Use Configuration Wizard in Context Menu >>>                           // 
-/******************************************************************************/
-/* This file is part of the uVision/ARM development tools.                    */
-/* Copyright (c) 2005-2010 Keil Software. All rights reserved.                */
-/* This software may only be used under the terms of a valid, current,        */
-/* end user licence from KEIL for a compatible version of KEIL software       */
-/* development tools. Nothing else gives you the right to use this software.  */
-/******************************************************************************/
-DEFINE LONG PMC;
-PMC = 0xFFFFFC00;
-_WDWORD(PMC+0x20, 0x00000701);      // CKGR_MOR: Enable main oscillator
-_sleep_(10);                        // Wait for stable Main Oscillator
-_WDWORD(PMC+0x30, 0x00000000);      // PMC_MCKR: PRES field 0
-_sleep_(10);                        // Wait for Master Clock ready
-_WDWORD(PMC+0x30, 0x00000001);      // PMC_MCKR: Select Main Oscillator clock
-_sleep_(10);                        // Wait for Master Clock ready
-Erase Done.
-Programming Done.
-Verify OK.
 Rebuild target 'Target 1'
 compiling pit.c...
 compiling aic.c...
@@ -192,154 +148,13 @@ compiling pio.c...
 compiling TCM8230.c...
 compiling isi.c...
 compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
+main.c(18): warning:  #61-D: integer operation result is out of range
+main.c(18): warning:  #68-D: integer conversion resulted in a change of sign
+main.c(52): warning:  #550-D: variable "rbyte2" was set but never used
+compiling spi.c...
 assembling SAM9XE.s...
 linking...
-Program Size: Code=3900 RO-data=152 RW-data=4 ZI-data=7420  
-"PIT_test.axf" - 0 Error(s), 2 Warning(s).
-Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
-Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
-/******************************************************************************/
-/* Clock.ini: Initialize clock to Main Oscillator clock                       */
-/******************************************************************************/
-// <<< Use Configuration Wizard in Context Menu >>>                           // 
-/******************************************************************************/
-/* This file is part of the uVision/ARM development tools.                    */
-/* Copyright (c) 2005-2010 Keil Software. All rights reserved.                */
-/* This software may only be used under the terms of a valid, current,        */
-/* end user licence from KEIL for a compatible version of KEIL software       */
-/* development tools. Nothing else gives you the right to use this software.  */
-/******************************************************************************/
-DEFINE LONG PMC;
-PMC = 0xFFFFFC00;
-_WDWORD(PMC+0x20, 0x00000701);      // CKGR_MOR: Enable main oscillator
-_sleep_(10);                        // Wait for stable Main Oscillator
-_WDWORD(PMC+0x30, 0x00000000);      // PMC_MCKR: PRES field 0
-_sleep_(10);                        // Wait for Master Clock ready
-_WDWORD(PMC+0x30, 0x00000001);      // PMC_MCKR: Select Main Oscillator clock
-_sleep_(10);                        // Wait for Master Clock ready
-Erase Done.
-Programming Done.
-Verify OK.
-Rebuild target 'Target 1'
-compiling pit.c...
-compiling aic.c...
-compiling tc.c...
-compiling twi.c...
-compiling dbgu.c...
-compiling math.c...
-compiling pio.c...
-compiling TCM8230.c...
-compiling isi.c...
-compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-assembling SAM9XE.s...
-linking...
-Program Size: Code=3904 RO-data=152 RW-data=4 ZI-data=7420  
-"PIT_test.axf" - 0 Error(s), 2 Warning(s).
-Rebuild target 'Target 1'
-compiling pit.c...
-compiling aic.c...
-compiling tc.c...
-compiling twi.c...
-compiling dbgu.c...
-compiling math.c...
-compiling pio.c...
-compiling TCM8230.c...
-compiling isi.c...
-compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-main.c(47): warning:  #550-D: variable "rbyte2" was set but never used
-assembling SAM9XE.s...
-linking...
-Program Size: Code=3904 RO-data=152 RW-data=4 ZI-data=7420  
-"PIT_test.axf" - 0 Error(s), 3 Warning(s).
-Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
-Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
-/******************************************************************************/
-/* Clock.ini: Initialize clock to Main Oscillator clock                       */
-/******************************************************************************/
-// <<< Use Configuration Wizard in Context Menu >>>                           // 
-/******************************************************************************/
-/* This file is part of the uVision/ARM development tools.                    */
-/* Copyright (c) 2005-2010 Keil Software. All rights reserved.                */
-/* This software may only be used under the terms of a valid, current,        */
-/* end user licence from KEIL for a compatible version of KEIL software       */
-/* development tools. Nothing else gives you the right to use this software.  */
-/******************************************************************************/
-DEFINE LONG PMC;
-PMC = 0xFFFFFC00;
-_WDWORD(PMC+0x20, 0x00000701);      // CKGR_MOR: Enable main oscillator
-_sleep_(10);                        // Wait for stable Main Oscillator
-_WDWORD(PMC+0x30, 0x00000000);      // PMC_MCKR: PRES field 0
-_sleep_(10);                        // Wait for Master Clock ready
-_WDWORD(PMC+0x30, 0x00000001);      // PMC_MCKR: Select Main Oscillator clock
-_sleep_(10);                        // Wait for Master Clock ready
-Erase Done.
-Programming Done.
-Verify OK.
-Rebuild target 'Target 1'
-compiling pit.c...
-compiling aic.c...
-compiling tc.c...
-compiling twi.c...
-compiling dbgu.c...
-compiling math.c...
-compiling pio.c...
-compiling TCM8230.c...
-compiling isi.c...
-compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-main.c(47): warning:  #550-D: variable "rbyte2" was set but never used
-assembling SAM9XE.s...
-linking...
-Program Size: Code=3904 RO-data=152 RW-data=4 ZI-data=7420  
-"PIT_test.axf" - 0 Error(s), 3 Warning(s).
-Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
-Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 
-/******************************************************************************/
-/* Clock.ini: Initialize clock to Main Oscillator clock                       */
-/******************************************************************************/
-// <<< Use Configuration Wizard in Context Menu >>>                           // 
-/******************************************************************************/
-/* This file is part of the uVision/ARM development tools.                    */
-/* Copyright (c) 2005-2010 Keil Software. All rights reserved.                */
-/* This software may only be used under the terms of a valid, current,        */
-/* end user licence from KEIL for a compatible version of KEIL software       */
-/* development tools. Nothing else gives you the right to use this software.  */
-/******************************************************************************/
-DEFINE LONG PMC;
-PMC = 0xFFFFFC00;
-_WDWORD(PMC+0x20, 0x00000701);      // CKGR_MOR: Enable main oscillator
-_sleep_(10);                        // Wait for stable Main Oscillator
-_WDWORD(PMC+0x30, 0x00000000);      // PMC_MCKR: PRES field 0
-_sleep_(10);                        // Wait for Master Clock ready
-_WDWORD(PMC+0x30, 0x00000001);      // PMC_MCKR: Select Main Oscillator clock
-_sleep_(10);                        // Wait for Master Clock ready
-Erase Done.
-Programming Done.
-Verify OK.
-Rebuild target 'Target 1'
-compiling pit.c...
-compiling aic.c...
-compiling tc.c...
-compiling twi.c...
-compiling dbgu.c...
-compiling math.c...
-compiling pio.c...
-compiling TCM8230.c...
-compiling isi.c...
-compiling main.c...
-main.c(17): warning:  #61-D: integer operation result is out of range
-main.c(17): warning:  #68-D: integer conversion resulted in a change of sign
-main.c(47): warning:  #550-D: variable "rbyte2" was set but never used
-assembling SAM9XE.s...
-linking...
-Program Size: Code=3904 RO-data=152 RW-data=4 ZI-data=7420  
+Program Size: Code=4504 RO-data=188 RW-data=8 ZI-data=7416  
 "PIT_test.axf" - 0 Error(s), 3 Warning(s).
 Load "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\PIT_test.AXF" 
 Include "C:\\Documents and Settings\\team1\\My Documents\\AT91 Code\\..\\Test Program\\Clock.ini" 

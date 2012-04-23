@@ -320,7 +320,7 @@ PMC_MCKRDY      EQU     (1<<3)          ; Master Clock Status
 ;// </e>
 PMC_SETUP       EQU     1
 PMC_SCER_Val    EQU     0x00000201
-PMC_PCER_Val    EQU     0x0040080C
+PMC_PCER_Val    EQU     0x0040180C
 CKGR_MOR_Val    EQU     0x00000B01
 CKGR_PLLAR_Val  EQU     0x20483F0E
 CKGR_PLLBR_Val  EQU     0x00000000

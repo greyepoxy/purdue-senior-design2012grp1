@@ -502,9 +502,9 @@
               <FilePath>.\header files\isi.c</FilePath>
             </File>
             <File>
-              <FileName>blink.c</FileName>
+              <FileName>main.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\blink.c</FilePath>
+              <FilePath>.\main.c</FilePath>
             </File>
           </Files>
         </Group>
