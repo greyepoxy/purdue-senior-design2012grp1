@@ -9,18 +9,20 @@
 //------------------------------------------------------------------------------
 #include "header files/TCM8230.h"
 #include "header files/isi.h"
-#include "header files/board.h"                
+#include "header files/board.h" 
+#include "header files/spi.h"               
 
 //------------------------------------------------------------------------------
 //		Global Variables
 //------------------------------------------------------------------------------
-static const Pin pins[] = {PINS_TWI0, BOARD_ISI_PINS_DATA, BOARD_ISI_PCK,BOARD_ISI_HSYNC,BOARD_ISI_VSYNC,BOARD_ISI_TWD,BOARD_ISI_TWCK,BOARD_ISI_PIO_CTRL2,BOARD_ISI_PIO_CTRL1,BOARD_ISI_MCK};
+static const Pin pins[] = {PINS_SPI0, PINS_TWI0, BOARD_ISI_PINS_DATA, BOARD_ISI_PCK,BOARD_ISI_HSYNC,BOARD_ISI_VSYNC,BOARD_ISI_TWD,BOARD_ISI_TWCK,BOARD_ISI_PIO_CTRL2,BOARD_ISI_PIO_CTRL1,BOARD_ISI_MCK};
 ISI_FrameBufferDescriptors FbList[2];
 static const int Buffer = 0x00301000;
 //static const int Fb_offset = ((128*96*2)/8);
 static int frame_ready_flag;
 #define DMA_BEGIN  0x00301000;
 unsigned char Matrix[(64*96)];//[4076];//[24576];//[64][96];//[128][96];//[24576];
+unsigned int pixaccum;
 
 
 //------------------------------------------------------------------------------
@@ -29,12 +31,15 @@ unsigned char Matrix[(64*96)];//[4076];//[24576];//[64][96];//[128][96];//[24576
 __irq void ISI_Handler(void){
 	int status;
 	status = AT91C_BASE_ISI->ISI_SR;
-	if (status&0x00000080 == 0x00000080)	
-	frame_ready_flag = 1;
-	else if(status&0x00000001 == 0x00000001)
-	frame_ready_flag = 0;
-	else
-	frame_ready_flag = 0;
+	if ((status&0x00000080) == 0x00000080) {
+		frame_ready_flag = 1;
+	}
+	else if((status&0x00000001) == 0x00000001) {
+		frame_ready_flag = 0;
+	}
+	else {
+		frame_ready_flag = 0;
+	}
 	*AT91C_AIC_EOICR = AT91C_BASE_ISI->ISI_SR;
 }
 
@@ -42,7 +47,7 @@ __irq void ISI_Handler(void){
 //		Main Function
 //------------------------------------------------------------------------------
 int main(void) {
-	int i = 0,j,k;
+	int i = 0,j,k,h;
 	unsigned char *startofdma;
 	unsigned char byte1, byte2, rbyte1, rbyte2;
 	startofdma = (unsigned char *)DMA_BEGIN;
@@ -56,8 +61,8 @@ int main(void) {
 
 	//Intilizing the FBD to buffer cam data
 	for(i = 0; i <= 1; i++){
-	FbList[i].Current = Buffer;
-	FbList[i].Next = (int)&FbList[i+1];
+		FbList[i].Current = Buffer;
+		FbList[i].Next = (int)&FbList[i+1];
 	};
 	FbList[i-1].Next = (int)&FbList[0];
 
@@ -70,7 +75,7 @@ int main(void) {
 
 	//setting the ISI
 	AT91C_BASE_ISI->ISI_PPFBD = (int)&FbList;
-	AT91C_BASE_ISI->ISI_CR1 = 0x02000000;
+	AT91C_BASE_ISI->ISI_CR1 = 0x02000700;//0x02000000;
     AT91C_BASE_ISI->ISI_CR2 = 0xC080B060;	
 
   	//clearing the frame ready flag
@@ -108,7 +113,7 @@ int main(void) {
 
 			//setting the ISI
 			AT91C_BASE_ISI->ISI_PPFBD = (int)&FbList;
-			AT91C_BASE_ISI->ISI_CR1 = 0x02000000;
+			AT91C_BASE_ISI->ISI_CR1 = 0x02000700;
     		AT91C_BASE_ISI->ISI_CR2 = 0xC080B060;
 
 
@@ -117,7 +122,7 @@ int main(void) {
 
 			k = 0;	//K IS THE POINTER TO THE NEXT SPOT IN THE DMA	  
 			j =	0;
-			for(i = 0; i < 24576; i++)//while(i < 24576)//28672)// 12288)			 //SIZE OF ONE MATRIX (64X96)(x2x2)
+			for(i = 0; i < 6144; i++)//while(i < 24576)//28672)// 12288)			 //SIZE OF ONE MATRIX (64X96)(x2x2)
 			{
 				byte1 = startofdma[k];
 				k++;
@@ -138,38 +143,47 @@ int main(void) {
 				byte2 = byte2 << 4;
 				byte2 = byte2 | 0x0F;
 				rbyte2 = byte1 & byte2; //rbyte2 has second pixel of RGB dualbyte
-				j++;
-				if(j % 2 == 1)
-				{
-				 	rbyte1 = rbyte1 & 0xF8;
-					Matrix[i/2] = rbyte1;
-				}
-				if(j == 128)
-				{
-					j = 0;
-				}
-					
+			   
+			    rbyte1 = rbyte1 & 0xF8;
+				Matrix[i] = rbyte1;
+				
+				
+
 			
 			}	//AFTER THIS LOOP, THE MATRIX OF RED IS FILLED
 
-			/*
+			
+			pixaccum = 0;
 			rbyte1 = 0;
-			for(i = 0; i < 96; i++)
+			Matrix[830] = 0;
+			Matrix[829] = 0;
+			for(i = (10 * 64); i < (93*64); i++)
 			{
-			 	for(j = 0; j < 64; j++)
+				pixaccum = pixaccum + Matrix[i];
+			 	if(Matrix[i] > rbyte1)
 				{
-					if(Matrix[j][i] > rbyte1)
-					{
-					 	rbyte1 = Matrix[j][i];
-						byte1 = j;
-						byte2 = i;
-					}	
-				}
-			}	 //AFTER THIS LOOP, BYTE1 HAS J COORDINATE, BYTE2 HAS I COORDINATE
+				 	rbyte1 = Matrix[i];
+					h = i;
+				}	
+				
+			}	 //AFTER THIS LOOP, byte1 HAS THE ARRAY INDEX OF THE BRIGHTEST PIXEL
 				 //OF MAX VALUE PIXEL IN THE ARRAY
-			*/
+			h = h + (10 * 64);
+			i = h % 64;
+			j = h / 64;
+			i = 64 - i;
+			j = 48 - j;
+
+			if((pixaccum < 220000) && (rbyte1 > 80))//220000 based on experimental data
+			{
+				//send i,j over SPI
+				SPI_Write(AT91C_BASE_SPI0, 0, (char)j);
+				while(!SPI_IsFinished(AT91C_BASE_SPI0));
+				SPI_Write(AT91C_BASE_SPI0, 0, (char)i);
+			}
 
 
+												                                                            
 			// POINT BUFFER BACK TO THE RIGHT SPOT
 			for(i = 0; i <= 1; i++){
 				FbList[i].Current = Buffer;

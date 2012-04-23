@@ -667,9 +667,9 @@ ARM Macro Assembler    Page 11
   322 00000000 00000201 
                        PMC_SCER_Val
                                EQU              0x00000201
-  323 00000000 0040080C 
+  323 00000000 0040180C 
                        PMC_PCER_Val
-                               EQU              0x0040080C
+                               EQU              0x0040180C
   324 00000000 00000B01 
                        CKGR_MOR_Val
                                EQU              0x00000B01
@@ -3243,7 +3243,7 @@ _Bit
               FFFFFA00 
               FFFFFC00 
               00000201 
-              0040080C 
+              0040180C 
               00000B01 
               20483F0E 
               FFFFEC00 
@@ -4666,7 +4666,7 @@ Symbol: PMC_PCER_OFS
    Uses
       At line 1461 in file SAM9XE.s
 Comment: PMC_PCER_OFS used once
-PMC_PCER_Val 0040080C
+PMC_PCER_Val 0040180C
 
 Symbol: PMC_PCER_Val
    Definitions
