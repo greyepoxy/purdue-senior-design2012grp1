@@ -11,7 +11,10 @@ INCLUDEPATH += .
 SOURCES += main.cpp \
     triangle.cpp \
     model.cpp \
-    glm.cpp
+    glm.cpp \
+    kalmanfilter.cpp \
+    usbthread.cpp \
+    genericexecthread.cpp
 SOURCES += glwidget.cpp
 SOURCES += mainwindow.cpp
 SOURCES += bubble.cpp
@@ -19,12 +22,17 @@ SOURCES += bubble.cpp
 HEADERS += glwidget.h \
     triangle.h \
     model.h \
-    glm.h
+    glm.h \
+    kalmanfilter.h \
+    usbthread.h \
+    genericexecthread.h
 HEADERS += mainwindow.h
 HEADERS += bubble.h
 
 RESOURCES += texture.qrc
 QT += opengl
+
+LIBS += -L/ -lusb-1.0
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/opengl/seniorprj

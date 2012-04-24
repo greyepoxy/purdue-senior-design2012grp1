@@ -85,16 +85,17 @@ void Model::initShaderProgram() {
     matrixUniform = program->uniformLocation("matrix");
     matrixNormalUniform = program->uniformLocation("normalMatrix");
     textureUniform = program->uniformLocation("tex");
+    projUniform = program->uniformLocation("proj");
 }
 
-void Model::draw(QMatrix4x4 modelview) {
+void Model::draw(QMatrix4x4 modelview, QMatrix4x4 proj) {
     program->bind();
     glBindTexture(GL_TEXTURE_2D, texture);
     foreach(ModelGroup grp, groups) {
         foreach(Triangle triangle, grp.triangles) {
             program->setUniformValue(textureUniform, 0);    // use texture unit 0
             // my uniforms
-            program->setUniformValue(program->uniformLocation("ambientLight"), QColor(255,0,0,255));
+            program->setUniformValue(program->uniformLocation("ambientLight"), QColor(150,150,150,255));
             program->setUniformValue(program->uniformLocation("lightDir"), QVector3D(0.0, 0.3, 1.0));
             //
 
@@ -111,6 +112,7 @@ void Model::draw(QMatrix4x4 modelview) {
             program->disableAttributeArray(texCoordAttr);
         }
     }
+    program->setUniformValue(projUniform, proj);
     program->setUniformValue(matrixUniform, modelview);
     program->setUniformValue(matrixNormalUniform, modelview.normalMatrix());
     program->release();
