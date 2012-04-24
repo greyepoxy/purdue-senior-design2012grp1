@@ -28,7 +28,7 @@ public:
 
     // functions
     void load(QString filename);
-    void draw(QMatrix4x4 modelview);
+    void draw(QMatrix4x4 modelview, QMatrix4x4 proj);
     void setTexture(GLuint texture);
     bool setVertexShaderFile(QString filename);
     bool setFragmentShaderFile(QString filename);
@@ -50,6 +50,7 @@ private:
     int texCoordAttr;
     int textureUniform;
     int matrixNormalUniform;
+    int projUniform;
 };
 
 #endif // MODEL_H

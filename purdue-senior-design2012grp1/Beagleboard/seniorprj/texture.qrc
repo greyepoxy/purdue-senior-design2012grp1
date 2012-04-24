@@ -1,12 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>qt.png</file>
-        <file>models/cube/default.png</file>
-        <file>models/teapot/default.png</file>
-        <file>models/cube/cube.obj</file>
-        <file>models/cube/default.mtl</file>
-        <file>models/teapot/default.mtl</file>
-        <file>models/teapot/teapot.max</file>
-        <file>models/teapot/teapot.obj</file>
     </qresource>
 </RCC>

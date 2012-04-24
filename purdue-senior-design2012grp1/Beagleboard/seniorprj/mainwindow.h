@@ -21,6 +21,7 @@ public:
     MainWindow();
 
 private:
+    virtual void keyReleaseEvent(QKeyEvent *);
 };
 
 #endif

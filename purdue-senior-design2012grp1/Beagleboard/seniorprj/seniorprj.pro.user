@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by Qt Creator 2.4.1, 2012-04-12T20:09:12. -->
+<!-- Written by Qt Creator 2.4.1, 2012-04-24T14:24:49. -->
 <qtcreator>
  <data>
   <variable>ProjectExplorer.Project.ActiveTarget</variable>
@@ -56,7 +56,7 @@
    <value type="int" key="ProjectExplorer.Target.ActiveDeployConfiguration">0</value>
    <value type="int" key="ProjectExplorer.Target.ActiveRunConfiguration">0</value>
    <valuemap type="QVariantMap" key="ProjectExplorer.Target.BuildConfiguration.0">
-    <value type="QString" key="ProjectExplorer.BuildCOnfiguration.ToolChain">Qt4ProjectManager.ToolChain.Maemo:/home/justin/QtSDK/Madde/targets/harmattan_10.2011.34-1/bin/gcc.arm-linux-generic-elf-32bit./home/justin/QtSDK/debugger/Maemo/gdb</value>
+    <value type="QString" key="ProjectExplorer.BuildCOnfiguration.ToolChain">ProjectExplorer.ToolChain.Gcc:/home/justin/Downloads/usr/local/angstrom/arm/arm-angstrom-linux-gnueabi/bin/gcc.arm-linux-generic-elf-32bit./home/justin/Downloads/usr/local/angstrom/arm/arm-angstrom-linux-gnueabi/bin/g++</value>
     <valuemap type="QVariantMap" key="ProjectExplorer.BuildConfiguration.BuildStepList.0">
      <valuemap type="QVariantMap" key="ProjectExplorer.BuildStepList.Step.0">
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DefaultDisplayName">qmake</value>

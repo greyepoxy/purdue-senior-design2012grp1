@@ -51,42 +51,54 @@
 
 #include "triangle.h"
 #include "model.h"
+#include "kalmanfilter.h"
+#include "usbthread.h"
+#include "genericexecthread.h"
 
 class Bubble;
 class GLWidget : public QGLWidget {
 
     Q_OBJECT
+
+    kalmanFilter* kalfilter;
+    GenericExecThread* kalThread;
+    USBThread* usbConnection;
+    GenericExecThread* usbThread;
 public:
     GLWidget(QWidget *parent = 0);
     ~GLWidget();
 public slots: 
     void setScaling(int scale);
     void setToCube();
-    void setToTeapot();
+    void setToMonkey();
     void showBubbles(bool);
 protected:
     void paintGL ();
     void initializeGL ();
 private:
-    GLuint  m_uiTexture;
     qreal   m_fAngle;
     qreal   m_fScale;
+    qreal   camSpeed;
+    qreal   camAngleSpeed;
+    QVector3D eyePos;
+    QVector3D eyeVel;
+    QVector3D eyeAccel;
+    QVector3D eyeDir;
+    QVector3D eyeUpDir;
+    QVector3D eyeAngle;
+    QVector3D eyeAngleVel;
     bool m_showBubbles;
-    //void paintTexturedCube();
-    //void paintQtLogo();
     void loadGemoetry();
-    //void createGeometry();
     void createBubbles(int number);
-    //void quad(qreal x1, qreal y1, qreal x2, qreal y2, qreal x3, qreal y3, qreal x4, qreal y4);
-    //void extrude(qreal x1, qreal y1, qreal x2, qreal y2);
+    qreal getClampAngle(qreal angle);
+    virtual void keyReleaseEvent(QKeyEvent *e);
     QVector<QVector3D> vertices;
     QVector<QVector3D> normals;
     Model m1,m2;
-    int dispTexture;
     QList<Bubble*> bubbles;
     int frames;
+    int dispTexture;
     QTime time;
-    //QGLShaderProgram program1;
     QGLShaderProgram program2;
     bool failedToConfigureShader;
 };
